@@ -9,8 +9,7 @@ interface Props {
 
 export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
   const playedTotal = standings.reduce((n, s) => n + s.played, 0)
-  const matchday = playedTotal === 0 ? 0 : Math.min(3, Math.ceil(playedTotal / 4))
-  const md = ['Pre-tournament', 'Matchday I', 'Matchday II', 'Matchday III'][matchday]
+  const matchesPlayed = playedTotal / 2
 
   return (
     <section className="bs-card">
@@ -21,12 +20,12 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
         <div>
           <div className="smallcaps" style={{ marginBottom: 2 }}>The Table</div>
           <div className="font-didot" style={{ fontSize: 26, lineHeight: 1, letterSpacing: '-0.005em' }}>
-            Group {groupId}, {md.toLowerCase()}
+            Group {groupId}{matchesPlayed > 0 ? ` (${matchesPlayed}/6 games played)` : ''}
           </div>
         </div>
         <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
           <span style={{ color: 'var(--advance)' }}>↑ Top two advance</span><br/>
-          <span style={{ color: 'var(--faint)' }}>↗ Best four 3rd-place qualify</span>
+          <span style={{ color: 'var(--faint)' }}>↗ Best eight 3rd-place qualify</span>
         </div>
       </header>
 
@@ -74,7 +73,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
                   <td style={{ color: s.gd > 0 ? 'var(--advance)' : s.gd < 0 ? 'var(--crimson)' : 'var(--muted)', fontWeight: 600 }}>
                     {s.gd > 0 ? `+${s.gd}` : s.gd}
                   </td>
-                  <td className="font-didot tnum" style={{ fontSize: 22, lineHeight: 1 }}>{s.points}</td>
+                  <td className="tnum" style={{ fontWeight: 700 }}>{s.points}</td>
                   <td style={{ padding: '10px 24px 10px 4px', textAlign: 'right' }}>
                     <span className="smallcaps" style={{
                       fontSize: 9, letterSpacing: '0.14em', fontWeight: 600,

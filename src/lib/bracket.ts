@@ -206,18 +206,18 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   }
   for (const serial of KO_SERIALS_BY_STAGE.r16) {
     const [s1, s2] = BRACKET_TREE[serial]
-    slotLabels.set(serial, { homeSlot: `W(${serialToLabel(s1)})`, awaySlot: `W(${serialToLabel(s2)})` })
+    slotLabels.set(serial, { homeSlot: `Winner ${serialToLabel(s1)}`, awaySlot: `Winner ${serialToLabel(s2)}` })
   }
   for (const serial of KO_SERIALS_BY_STAGE.qf) {
     const [s1, s2] = BRACKET_TREE[serial]
-    slotLabels.set(serial, { homeSlot: `W(${serialToLabel(s1)})`, awaySlot: `W(${serialToLabel(s2)})` })
+    slotLabels.set(serial, { homeSlot: `Winner ${serialToLabel(s1)}`, awaySlot: `Winner ${serialToLabel(s2)}` })
   }
   for (const serial of KO_SERIALS_BY_STAGE.sf) {
     const [s1, s2] = BRACKET_TREE[serial]
-    slotLabels.set(serial, { homeSlot: `W(${serialToLabel(s1)})`, awaySlot: `W(${serialToLabel(s2)})` })
+    slotLabels.set(serial, { homeSlot: `Winner ${serialToLabel(s1)}`, awaySlot: `Winner ${serialToLabel(s2)}` })
   }
-  slotLabels.set(103, { homeSlot: 'L(M29)', awaySlot: 'L(M30)' })
-  slotLabels.set(104, { homeSlot: 'W(M29)', awaySlot: 'W(M30)' })
+  slotLabels.set(103, { homeSlot: 'Loser M29', awaySlot: 'Loser M30' })
+  slotLabels.set(104, { homeSlot: 'Winner M29', awaySlot: 'Winner M30' })
 
   // Step 5: build all KO team maps (needed for winner resolution)
   // We iterate rounds in order so each round can resolve from the previous
@@ -231,8 +231,8 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     const [s1, s2] = BRACKET_TREE[serial]
     const w1 = getWinnerOfMatch(s1, results, allKOTeams)
     const w2 = getWinnerOfMatch(s2, results, allKOTeams)
-    const qualLabel1 = w1 ? `W(${serialToLabel(s1)})` : `W(${serialToLabel(s1)})`
-    const qualLabel2 = w2 ? `W(${serialToLabel(s2)})` : `W(${serialToLabel(s2)})`
+    const qualLabel1 = w1 ? `Winner ${serialToLabel(s1)}` : `Winner ${serialToLabel(s1)}`
+    const qualLabel2 = w2 ? `Winner ${serialToLabel(s2)}` : `Winner ${serialToLabel(s2)}`
     allKOTeams.set(serial, {
       home: w1 ? { ...w1, qualLabel: qualLabel1 } : null,
       away: w2 ? { ...w2, qualLabel: qualLabel2 } : null,
@@ -245,8 +245,8 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     const w1 = getWinnerOfMatch(s1, results, allKOTeams)
     const w2 = getWinnerOfMatch(s2, results, allKOTeams)
     allKOTeams.set(serial, {
-      home: w1 ? { ...w1, qualLabel: `W(${serialToLabel(s1)})` } : null,
-      away: w2 ? { ...w2, qualLabel: `W(${serialToLabel(s2)})` } : null,
+      home: w1 ? { ...w1, qualLabel: `Winner ${serialToLabel(s1)}` } : null,
+      away: w2 ? { ...w2, qualLabel: `Winner ${serialToLabel(s2)}` } : null,
     })
   }
 
@@ -256,8 +256,8 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     const w1 = getWinnerOfMatch(s1, results, allKOTeams)
     const w2 = getWinnerOfMatch(s2, results, allKOTeams)
     allKOTeams.set(serial, {
-      home: w1 ? { ...w1, qualLabel: `W(${serialToLabel(s1)})` } : null,
-      away: w2 ? { ...w2, qualLabel: `W(${serialToLabel(s2)})` } : null,
+      home: w1 ? { ...w1, qualLabel: `Winner ${serialToLabel(s1)}` } : null,
+      away: w2 ? { ...w2, qualLabel: `Winner ${serialToLabel(s2)}` } : null,
     })
   }
 
@@ -265,16 +265,16 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   const l1 = getLoserOfMatch(101, results, allKOTeams)
   const l2 = getLoserOfMatch(102, results, allKOTeams)
   allKOTeams.set(103, {
-    home: l1 ? { ...l1, qualLabel: 'L(M29)' } : null,
-    away: l2 ? { ...l2, qualLabel: 'L(M30)' } : null,
+    home: l1 ? { ...l1, qualLabel: 'Loser M29' } : null,
+    away: l2 ? { ...l2, qualLabel: 'Loser M30' } : null,
   })
 
   // Final (104) = winners of SF
   const w1 = getWinnerOfMatch(101, results, allKOTeams)
   const w2 = getWinnerOfMatch(102, results, allKOTeams)
   allKOTeams.set(104, {
-    home: w1 ? { ...w1, qualLabel: 'W(M29)' } : null,
-    away: w2 ? { ...w2, qualLabel: 'W(M30)' } : null,
+    home: w1 ? { ...w1, qualLabel: 'Winner M29' } : null,
+    away: w2 ? { ...w2, qualLabel: 'Winner M30' } : null,
   })
 
   // Step 6: build final KOMatch array

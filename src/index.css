@@ -125,8 +125,9 @@ body {
   border-bottom: 2px solid transparent;
   padding: 4px 6px;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
 }
 .bs-group:hover { color: var(--ink); }
 .bs-group.active {
@@ -226,4 +227,5 @@ body {
   .bs-phase-eyebrow { letter-spacing: 0.16em; }
   .bs-masthead-title { font-size: 38px !important; }
   .bs-page-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .bs-phase-nav { padding-left: 16px !important; padding-right: 16px !important; }
 }

@@ -20,6 +20,7 @@ interface Props {
   away: Team
   result: MatchResult | undefined
   onUpdate: (r: MatchResult) => void
+  onClear?: () => void
   isKO?: boolean
   disabled?: boolean
 }
@@ -37,7 +38,7 @@ function formatDate(iso?: string): string {
 
 export function MatchCard({
   label, serial, date, venue, oddsHome, oddsDraw, oddsAway,
-  home, away, result, onUpdate, isKO, disabled,
+  home, away, result, onUpdate, onClear, isKO, disabled,
 }: Props) {
   const hs = result?.homeScore ?? null
   const as_ = result?.awayScore ?? null
@@ -85,12 +86,26 @@ export function MatchCard({
             </span>
           )}
         </div>
-        <span style={{
-          fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 700,
-          color: isComplete ? 'var(--advance)' : 'var(--faint)',
-        }}>
-          {isComplete ? '✓ Reported' : 'Pending'}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{
+            fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 700,
+            color: isComplete ? 'var(--advance)' : 'var(--faint)',
+          }}>
+            {isComplete ? '✓ Reported' : 'Pending'}
+          </span>
+          {hasResult && onClear && (
+            <button
+              onClick={e => { e.stopPropagation(); onClear() }}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'var(--faint)', fontSize: 16, lineHeight: 1, padding: '0 2px',
+                fontFamily: 'inherit',
+              }}
+              title="Clear result"
+              aria-label="Clear result"
+            >×</button>
+          )}
+        </div>
       </header>
 
       {/* Body */}
@@ -113,7 +128,7 @@ export function MatchCard({
         {/* Score */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <ScoreEntry value={hs} onChange={setHome} disabled={disabled} />
-          <span className="font-didot" style={{ fontSize: 28, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>–</span>
+          <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>–</span>
           <ScoreEntry value={as_} onChange={setAway} disabled={disabled} />
         </div>
 

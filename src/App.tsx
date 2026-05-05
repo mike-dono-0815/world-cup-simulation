@@ -76,37 +76,56 @@ export default function App() {
     return c
   }, [results])
 
+  const fillPhase = useMemo((): Phase => {
+    if (phaseCounts.groups < 72) return 'groups'
+    if (phaseCounts.r32 < 16) return 'r32'
+    if (phaseCounts.r16 < 8)  return 'r16'
+    if (phaseCounts.qf  < 4)  return 'qf'
+    if (phaseCounts.sf  < 2)  return 'sf'
+    return 'final'
+  }, [phaseCounts])
+
+  const fillInfo = useMemo(() => {
+    const phase = PHASES.find(p => p.id === fillPhase)!
+    return { label: phase.label, played: phaseCounts[fillPhase], total: phase.total }
+  }, [fillPhase, phaseCounts])
+
   function handleAutoFill(strategy: AutoFillStrategy) {
     const newResults = { ...results }
-    for (const m of GROUP_MATCHES) {
-      const r = newResults[m.serial]
-      if (r?.homeScore == null || r?.awayScore == null) {
-        newResults[m.serial] = autoFillGroupMatch(m, strategy)
+    if (fillPhase === 'groups') {
+      for (const m of GROUP_MATCHES) {
+        const r = newResults[m.serial]
+        if (r?.homeScore == null || r?.awayScore == null) {
+          newResults[m.serial] = autoFillGroupMatch(m, strategy)
+        }
+      }
+    } else {
+      const koSerials = fillPhase === 'final'
+        ? [...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final]
+        : KO_SERIALS_BY_STAGE[fillPhase]
+      for (const serial of koSerials) {
+        const r = newResults[serial]
+        if (r?.homeScore != null && r?.awayScore != null) continue
+        const freshKO = buildAllKOMatches(newResults)
+        const m = freshKO.find(x => x.serial === serial)
+        if (!m?.home || !m?.away) continue
+        const filled = autoFillKOMatch(m, strategy)
+        if (filled) newResults[serial] = filled
       }
     }
-    const koOrder = [
-      ...KO_SERIALS_BY_STAGE.r32, ...KO_SERIALS_BY_STAGE.r16,
-      ...KO_SERIALS_BY_STAGE.qf, ...KO_SERIALS_BY_STAGE.sf,
-      ...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final,
-    ]
-    for (const serial of koOrder) {
-      const r = newResults[serial]
-      if (r?.homeScore != null && r?.awayScore != null) continue
-      const freshKO = buildAllKOMatches(newResults)
-      const m = freshKO.find(x => x.serial === serial)
-      if (!m?.home || !m?.away) continue
-      const filled = autoFillKOMatch(m, strategy)
-      if (filled) newResults[serial] = filled
-    }
     setResults(newResults)
+  }
+
+  function clearResult(serial: number) {
+    setResults(prev => { const next = { ...prev }; delete next[serial]; return next })
   }
 
   function handleReset() {
     clearResults(); setResults({}); setShowResetConfirm(false)
   }
 
-  const koStageForPhase: Record<Exclude<Phase,'groups'>, KOMatch['stage'] | 'all'> = {
-    r32: 'r32', r16: 'r16', qf: 'qf', sf: 'sf', final: 'all', // 'final' phase shows 3rd-place + final
+  const koStageForPhase: Record<Exclude<Phase,'groups'>, KOMatch['stage'] | KOMatch['stage'][]> = {
+    r32: 'r32', r16: 'r16', qf: 'qf', sf: 'sf', final: ['3rd', 'final'],
   }
 
   return (
@@ -114,7 +133,6 @@ export default function App() {
       {/* Masthead */}
       <header style={{
         background: 'var(--paper)', position: 'sticky', top: 0, zIndex: 100,
-        borderBottom: '1px solid var(--ink)',
       }}>
         <div className="bs-page-pad" style={{
           maxWidth: 1240, margin: '0 auto', padding: '18px 32px 10px',
@@ -158,46 +176,46 @@ export default function App() {
         </div>
 
         {/* Phase rail */}
-        <nav style={{
-          maxWidth: 1240, margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: `repeat(${PHASES.length}, 1fr)`,
-          borderTop: '1px solid var(--ink)',
-          borderBottom: '1px solid var(--ink)',
-        }}>
-          {PHASES.map((p, i) => {
-            const isActive = activePhase === p.id
-            const played = phaseCounts[p.id]
-            return (
-              <button
-                key={p.id}
-                className={`bs-phase${isActive ? ' active' : ''}`}
-                onClick={() => setActivePhase(p.id)}
-                style={i < PHASES.length - 1 ? { borderRight: '1px solid var(--ink)' } : undefined}
-              >
-                <span className="bs-phase-eyebrow">Phase {p.num}</span>
-                <span className="bs-phase-title">{p.label}</span>
-                <span className="bs-phase-meta">{played}/{p.total} reported</span>
-              </button>
-            )
-          })}
-        </nav>
+        <div className="bs-phase-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
+          <nav style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${PHASES.length}, 1fr)`,
+            borderTop: '1px solid var(--ink)',
+            borderBottom: '1px solid var(--ink)',
+          }}>
+            {PHASES.map((p, i) => {
+              const isActive = activePhase === p.id
+              const played = phaseCounts[p.id]
+              return (
+                <button
+                  key={p.id}
+                  className={`bs-phase${isActive ? ' active' : ''}`}
+                  onClick={() => setActivePhase(p.id)}
+                  style={{ borderRight: '1px solid var(--ink)' }}
+                >
+                  <span className="bs-phase-eyebrow">Phase {p.num}</span>
+                  <span className="bs-phase-title">{p.label}</span>
+                  <span className="bs-phase-meta">{played}/{p.total} reported</span>
+                </button>
+              )
+            })}
+          </nav>
+        </div>
 
         {/* Group sub-nav (only when groups phase active) */}
         {activePhase === 'groups' && (
-          <div className="bs-page-pad" style={{
-            maxWidth: 1240, margin: '0 auto', padding: '10px 32px 8px',
-            borderBottom: '1px solid var(--hairline)',
+          <div className="bs-phase-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
+          <div style={{ borderBottom: '1px solid var(--hairline)', padding: '10px 0 8px' }}>
+          <div style={{
             display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, rowGap: 6,
           }}>
-            <span className="smallcaps" style={{ marginRight: 8 }}>The Groups</span>
             {GROUPS.map((g, i) => (
               <span key={g} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <button
                   className={`bs-group${activeGroup === g ? ' active' : ''}`}
                   onClick={() => setActiveGroup(g)}
                 >
-                  Group {g}
+                  <span>Group {g}</span>
                   <span className="tnum" style={{
                     fontSize: 10, fontWeight: 500,
                     color: groupCounts[g] === 6 ? 'var(--advance)' : 'var(--faint)',
@@ -211,19 +229,23 @@ export default function App() {
               </span>
             ))}
           </div>
+          </div>
+          </div>
         )}
       </header>
 
       {/* Champion banner */}
       {champion && (
-        <div className="bs-champion">
-          <span className="smallcaps" style={{ color: 'rgba(242,237,224,0.7)', letterSpacing: '0.22em' }}>
-            World Champion
-          </span>
-          <Flag code={champion.flagCode} size={32} />
-          <span className="font-didot" style={{ fontSize: 30, lineHeight: 1 }}>
-            {champion.name}
-          </span>
+        <div className="bs-phase-nav" style={{ width: '100%', maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
+          <div className="bs-champion">
+            <span className="smallcaps" style={{ color: 'rgba(242,237,224,0.7)', letterSpacing: '0.22em' }}>
+              World Champion
+            </span>
+            <Flag code={champion.flagCode} size={32} />
+            <span className="font-didot" style={{ fontSize: 30, lineHeight: 1 }}>
+              {champion.name}
+            </span>
+          </div>
         </div>
       )}
 
@@ -239,12 +261,14 @@ export default function App() {
             advancingThirds={advancingThirds}
             results={results}
             onUpdate={updateResult}
+            onClear={clearResult}
           />
         ) : (
           <KOSection
             koMatches={koMatches}
             results={results}
             onUpdate={updateResult}
+            onClear={clearResult}
             filterStage={koStageForPhase[activePhase]}
           />
         )}
@@ -263,6 +287,7 @@ export default function App() {
 
       {showAutoFill && (
         <AutoFillModal
+          fillInfo={fillInfo}
           onApply={handleAutoFill}
           onClose={() => setShowAutoFill(false)}
         />

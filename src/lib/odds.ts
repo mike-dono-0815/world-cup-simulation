@@ -10,7 +10,7 @@ export function deriveMatchOdds(
     Math.log(Math.max(0.01, impliedPctAway)) +
     homeAdvantage
 
-  let pA = 1 / (1 + Math.exp(-diff * 0.30))
+  let pA = 1 / (1 + Math.exp(-diff * 0.45))
   let pDraw = Math.max(0.03, 0.26 * Math.exp(-0.04 * diff * diff))
   let pB = Math.max(0.015, 1 - pA - pDraw)
 

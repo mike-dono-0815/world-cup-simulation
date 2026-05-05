@@ -9,9 +9,10 @@ interface Props {
   advancingThirds: Set<string>
   results: Record<number, MatchResult>
   onUpdate: (serial: number, r: MatchResult) => void
+  onClear: (serial: number) => void
 }
 
-export function GroupTab({ groupId, matches, standings, advancingThirds, results, onUpdate }: Props) {
+export function GroupTab({ groupId, matches, standings, advancingThirds, results, onUpdate, onClear }: Props) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <StandingsTable standings={standings} advancingThirds={advancingThirds} groupId={groupId} />
@@ -41,6 +42,7 @@ export function GroupTab({ groupId, matches, standings, advancingThirds, results
               away={{ name: m.away, flagCode: m.awayFlagCode }}
               result={results[m.serial]}
               onUpdate={r => onUpdate(m.serial, r)}
+              onClear={() => onClear(m.serial)}
               isKO={false}
             />
           ))}

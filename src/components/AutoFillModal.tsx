@@ -3,13 +3,15 @@ import { STRATEGY_LABELS } from '../lib/autofill'
 import { useState } from 'react'
 
 interface Props {
+  fillInfo: { label: string; played: number; total: number }
   onApply: (strategy: AutoFillStrategy) => void
   onClose: () => void
 }
 
 const STRATEGIES = Object.keys(STRATEGY_LABELS) as AutoFillStrategy[]
 
-export function AutoFillModal({ onApply, onClose }: Props) {
+export function AutoFillModal({ fillInfo, onApply, onClose }: Props) {
+  const remaining = fillInfo.total - fillInfo.played
   const [selected, setSelected] = useState<AutoFillStrategy>('follow_odds')
 
   return (
@@ -30,10 +32,10 @@ export function AutoFillModal({ onApply, onClose }: Props) {
             <div>
               <div className="smallcaps" style={{ marginBottom: 4 }}>The Oracle</div>
               <div className="font-didot" style={{ fontSize: 30, lineHeight: 1, letterSpacing: '-0.005em' }}>
-                Auto-fill remaining
+                Auto-fill
               </div>
               <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6, fontStyle: 'italic' }}>
-                Choose a forecasting temperament to fill all unplayed matches.
+                Filling <strong>{remaining}</strong> unplayed game{remaining !== 1 ? 's' : ''} in the <strong>{fillInfo.label}</strong> ({fillInfo.played}/{fillInfo.total} already reported).
               </div>
             </div>
             <button
@@ -103,7 +105,7 @@ export function AutoFillModal({ onApply, onClose }: Props) {
         }}>
           <button className="bs-btn" onClick={onClose}>Cancel</button>
           <button className="bs-btn primary" onClick={() => { onApply(selected); onClose() }}>
-            Apply
+            Fill {remaining} game{remaining !== 1 ? 's' : ''}
           </button>
         </footer>
       </div>

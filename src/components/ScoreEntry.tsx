@@ -16,9 +16,10 @@ export function ScoreEntry({ value, onChange, disabled }: Props) {
         aria-label="decrease"
       >−</button>
       <span
-        className="font-didot tnum"
+        className="tnum"
         style={{
           fontSize: 38,
+          fontWeight: 700,
           lineHeight: 1,
           minWidth: 28,
           textAlign: 'center',

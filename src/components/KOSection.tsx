@@ -1,13 +1,14 @@
 import type { KOMatch, MatchResult } from '../types'
 import { MatchCard, TBDMatchCard } from './MatchCard'
 import { Flag } from './Flag'
-import { STAGE_LABELS, KO_SERIALS_BY_STAGE } from '../lib/bracket'
+import { STAGE_LABELS, KO_SERIALS_BY_STAGE, BRACKET_TREE } from '../lib/bracket'
 
 interface Props {
   koMatches: KOMatch[]
   results: Record<number, MatchResult>
   onUpdate: (serial: number, r: MatchResult) => void
-  filterStage?: KOMatch['stage'] | 'all'
+  onClear: (serial: number) => void
+  filterStage?: KOMatch['stage'] | KOMatch['stage'][] | 'all'
 }
 
 type Stage = KOMatch['stage']
@@ -16,9 +17,25 @@ const STAGE_NUM: Record<Stage, string> = {
   r32: 'I', r16: 'II', qf: 'III', sf: 'IV', '3rd': 'V', final: 'VI',
 }
 
-export function KOSection({ koMatches, results, onUpdate, filterStage = 'all' }: Props) {
+// Next-stage serials whose BRACKET_TREE entries define the pairs for each stage
+const NEXT_STAGE_SERIALS: Partial<Record<Stage, number[]>> = {
+  r32: KO_SERIALS_BY_STAGE.r16,
+  r16: KO_SERIALS_BY_STAGE.qf,
+  qf:  KO_SERIALS_BY_STAGE.sf,
+  sf:  [104],
+}
+
+function getPairs(stage: Stage): [number, number][] {
+  const nextSerials = NEXT_STAGE_SERIALS[stage]
+  if (!nextSerials) return []
+  return nextSerials
+    .filter(s => BRACKET_TREE[s] !== undefined)
+    .map(s => BRACKET_TREE[s] as [number, number])
+}
+
+export function KOSection({ koMatches, results, onUpdate, onClear, filterStage = 'all' }: Props) {
   const bySerial = new Map(koMatches.map(m => [m.serial, m]))
-  const stages = filterStage === 'all' ? STAGE_ORDER : [filterStage as Stage]
+  const stages = filterStage === 'all' ? STAGE_ORDER : Array.isArray(filterStage) ? filterStage : [filterStage as Stage]
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -55,38 +72,49 @@ export function KOSection({ koMatches, results, onUpdate, filterStage = 'all' }:
 
             {stage === 'final' ? (
               <FinalCard match={stageMatches[0]} result={results[stageMatches[0].serial]} onUpdate={onUpdate} />
+            ) : stage === '3rd' ? (
+              (() => {
+                const ko = stageMatches[0]
+                if (!ko.home || !ko.away) return <TBDMatchCard label={ko.label} homeLabel={ko.homeSlot} awayLabel={ko.awaySlot} />
+                return <MatchCard label={ko.label} home={ko.home} away={ko.away} result={results[ko.serial]} onUpdate={r => onUpdate(ko.serial, r)} onClear={() => onClear(ko.serial)} isKO />
+              })()
             ) : (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: stage === 'r32'
-                  ? 'repeat(auto-fill, minmax(320px, 1fr))'
-                  : 'repeat(auto-fill, minmax(360px, 1fr))',
-                gap: 10,
-              }}>
-                {stageMatches.map(ko => {
-                  if (!ko.home || !ko.away) {
-                    return (
-                      <TBDMatchCard
-                        key={ko.serial}
-                        label={ko.label}
-                        homeLabel={ko.homeSlot}
-                        awayLabel={ko.awaySlot}
-                      />
-                    )
-                  }
-                  return (
-                    <MatchCard
-                      key={ko.serial}
-                      label={ko.label}
-                      serial={ko.serial}
-                      home={ko.home}
-                      away={ko.away}
-                      result={results[ko.serial]}
-                      onUpdate={r => onUpdate(ko.serial, r)}
-                      isKO
-                    />
-                  )
-                })}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {getPairs(stage).map((pair, pairIdx, arr) => (
+                  <div key={pairIdx}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {pair.map(serial => {
+                        const ko = bySerial.get(serial)
+                        if (!ko) return null
+                        if (!ko.home || !ko.away) {
+                          return (
+                            <TBDMatchCard
+                              key={ko.serial}
+                              label={ko.label}
+                              homeLabel={ko.homeSlot}
+                              awayLabel={ko.awaySlot}
+                            />
+                          )
+                        }
+                        return (
+                          <MatchCard
+                            key={ko.serial}
+                            label={ko.label}
+                            home={ko.home}
+                            away={ko.away}
+                            result={results[ko.serial]}
+                            onUpdate={r => onUpdate(ko.serial, r)}
+                            onClear={() => onClear(ko.serial)}
+                            isKO
+                          />
+                        )
+                      })}
+                    </div>
+                    {pairIdx < arr.length - 1 && (
+                      <div style={{ margin: '14px 0', borderBottom: '1px solid var(--hairline)' }} />
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </section>
