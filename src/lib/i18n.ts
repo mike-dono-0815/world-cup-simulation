@@ -164,7 +164,7 @@ const de: Translations = {
   btn_cancel: 'Abbrechen',
   footer: 'Die WM-Chronik · Prognostiziert, nicht vorherbestimmt · Ausg. 2026',
   the_fixtures: 'Begegnungen',
-  six_matches_tagline: 'Sechs Spiele · die Top Zwei steigen auf',
+  six_matches_tagline: '6 Spiele · Top 2 steigen auf',
   the_table: 'Die Tabelle',
   group_label: (g, p) => p > 0 ? `Gruppe ${g} (${p}/6)` : `Gruppe ${g}`,
   top_two_advance: '↑ Zwei Ersten steigen auf',
