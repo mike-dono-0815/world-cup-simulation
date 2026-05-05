@@ -162,7 +162,7 @@ function FinalCard({ match, result, onUpdate }: {
     <article className="bs-card" style={{ opacity: isPartial ? 0.65 : 1 }}>
       <div style={{ padding: '24px 28px' }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
-          <div className="font-didot" style={{ fontSize: 38, lineHeight: 1, letterSpacing: '-0.01em' }}>
+          <div style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>
             The Championship
           </div>
         </div>
@@ -182,7 +182,7 @@ function FinalCard({ match, result, onUpdate }: {
           {/* Score */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
             <ScoreBig value={hs} onChange={setHome} disabled={isPartial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
-            <span className="font-didot" style={{ fontSize: 36, color: 'var(--muted)' }}>–</span>
+            <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
             <ScoreBig value={as_} onChange={setAway} disabled={isPartial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
           </div>
 
@@ -242,7 +242,7 @@ function ScoreBig({ value, onChange, disabled, onTap, isActive }: {
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
       <button className="bs-step bs-score-step" onMouseDown={e => e.preventDefault()} onClick={() => !disabled && onChange(Math.max(0, v - 1))} disabled={disabled}>−</button>
       <span
-        className={`font-didot tnum bs-score-num${isActive ? ' active' : ''}`}
+        className={`tnum bs-score-num${isActive ? ' active' : ''}`}
         style={{ fontSize: 56, lineHeight: 1, minWidth: 40, textAlign: 'center', color: value == null ? 'var(--faint)' : 'var(--ink)' }}
         onClick={onTap}
       >
