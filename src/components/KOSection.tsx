@@ -18,9 +18,6 @@ interface Props {
 
 type Stage = KOMatch['stage']
 const STAGE_ORDER: Stage[] = ['r32', 'r16', 'qf', 'sf', '3rd', 'final']
-const STAGE_NUM: Record<Stage, string> = {
-  r32: 'I', r16: 'II', qf: 'III', sf: 'IV', '3rd': 'V', final: 'VI',
-}
 
 // Next-stage serials whose BRACKET_TREE entries define the pairs for each stage
 const NEXT_STAGE_SERIALS: Partial<Record<Stage, number[]>> = {
