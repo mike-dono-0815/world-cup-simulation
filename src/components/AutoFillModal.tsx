@@ -35,7 +35,7 @@ export function AutoFillModal({ fillInfo, onApply, onClose }: Props) {
                 Auto-fill
               </div>
               <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6, fontStyle: 'italic' }}>
-                Filling <strong>{remaining}</strong> unplayed game{remaining !== 1 ? 's' : ''} in the <strong>{fillInfo.label}</strong> ({fillInfo.played}/{fillInfo.total} already reported).
+                Filling <strong>{remaining}</strong> ready game{remaining !== 1 ? 's' : ''} — starting from the <strong>{fillInfo.label}</strong>, plus any later rounds where both teams are already known.
               </div>
             </div>
             <button

@@ -87,29 +87,35 @@ export default function App() {
 
   const fillInfo = useMemo(() => {
     const phase = PHASES.find(p => p.id === fillPhase)!
-    return { label: phase.label, played: phaseCounts[fillPhase], total: phase.total }
-  }, [fillPhase, phaseCounts])
+    const groupPending = fillPhase === 'groups'
+      ? GROUP_MATCHES.filter(m => results[m.serial]?.homeScore == null).length
+      : 0
+    // KO matches ready right now (both teams known, no result yet) — across all stages
+    const koPending = koMatches.filter(ko =>
+      ko.home && ko.away && results[ko.serial]?.homeScore == null
+    ).length
+    const pending = groupPending + koPending
+    return { label: phase.label, played: totalPlayed, total: totalPlayed + pending }
+  }, [fillPhase, results, totalPlayed, koMatches])
 
   function handleAutoFill(strategy: AutoFillStrategy) {
     const newResults = { ...results }
+    // Fill unfilled group matches when in the group phase
     if (fillPhase === 'groups') {
       for (const m of GROUP_MATCHES) {
         if (newResults[m.serial]?.homeScore == null || newResults[m.serial]?.awayScore == null) {
           newResults[m.serial] = autoFillGroupMatch(m, strategy)
         }
       }
-    } else {
-      const serials = fillPhase === 'final'
-        ? [...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final]
-        : KO_SERIALS_BY_STAGE[fillPhase]
-      for (const serial of serials) {
-        if (newResults[serial]?.homeScore != null && newResults[serial]?.awayScore != null) continue
-        const freshKO = buildAllKOMatches(newResults)
-        const ko = freshKO.find(x => x.serial === serial)
-        if (!ko?.home || !ko?.away) continue
-        const filled = autoFillKOMatch(ko, strategy)
-        if (filled) newResults[serial] = filled
-      }
+    }
+    // Fill every KO match that already has both teams determined (any stage).
+    // Uses koMatches — derived from pre-fill results — so only currently-known
+    // teams are filled; no cascading beyond what's already deterministic.
+    for (const ko of koMatches) {
+      if (!ko.home || !ko.away) continue
+      if (newResults[ko.serial]?.homeScore != null && newResults[ko.serial]?.awayScore != null) continue
+      const filled = autoFillKOMatch(ko, strategy)
+      if (filled) newResults[ko.serial] = filled
     }
     setResults(newResults)
   }
