@@ -93,13 +93,15 @@ export function MatchCard({
           }}>
             {isComplete ? '✓ Reported' : 'Pending'}
           </span>
-          {hasResult && onClear && (
+          {onClear && (
             <button
+              onMouseDown={e => e.preventDefault()}
               onClick={e => { e.stopPropagation(); onClear() }}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: 'var(--faint)', fontSize: 16, lineHeight: 1, padding: '0 2px',
-                fontFamily: 'inherit',
+                color: 'var(--faint)', fontSize: 14, lineHeight: 1, padding: '0 2px',
+                fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center',
+                visibility: hasResult ? 'visible' : 'hidden',
               }}
               title="Clear result"
               aria-label="Clear result"
@@ -128,7 +130,7 @@ export function MatchCard({
         {/* Score */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <ScoreEntry value={hs} onChange={setHome} disabled={disabled} />
-          <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>–</span>
+          <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
           <ScoreEntry value={as_} onChange={setAway} disabled={disabled} />
         </div>
 
@@ -183,9 +185,9 @@ export function MatchCard({
             The Odds
           </span>
           <div style={{ flex: 1, display: 'flex', height: 4, border: '1px solid var(--ink)' }}>
-            <div style={{ width: `${pH}%`, background: 'var(--ink)' }} title={`Home ${pH}%`} />
-            <div style={{ width: `${pD}%`, background: 'var(--faint)' }} title={`Draw ${pD}%`} />
-            <div style={{ width: `${pA}%`, background: 'var(--crimson)' }} title={`Away ${pA}%`} />
+            <div style={{ width: `${pH}%`, background: '#365E3D' }} title={`Home ${pH}%`} />
+            <div style={{ width: `${pD}%`, background: '#8B7C5E' }} title={`Draw ${pD}%`} />
+            <div style={{ width: `${pA}%`, background: '#7A2A2A' }} title={`Away ${pA}%`} />
           </div>
           <span className="font-didot tnum" style={{ fontSize: 13, color: 'var(--muted)', whiteSpace: 'nowrap' }}>
             {oddsHome.toFixed(2)} · {oddsDraw.toFixed(2)} · {oddsAway.toFixed(2)}

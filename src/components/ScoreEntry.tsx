@@ -11,6 +11,7 @@ export function ScoreEntry({ value, onChange, disabled }: Props) {
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <button
         className="bs-step"
+        onMouseDown={e => e.preventDefault()}
         onClick={() => !disabled && onChange(Math.max(0, v - 1))}
         disabled={disabled}
         aria-label="decrease"
@@ -30,6 +31,7 @@ export function ScoreEntry({ value, onChange, disabled }: Props) {
       </span>
       <button
         className="bs-step"
+        onMouseDown={e => e.preventDefault()}
         onClick={() => !disabled && onChange(v + 1)}
         disabled={disabled}
         aria-label="increase"
