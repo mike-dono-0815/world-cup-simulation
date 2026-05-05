@@ -4,34 +4,35 @@ interface Props {
   disabled?: boolean
 }
 
+/** Score entry — Option B · hairline, left/right arrows. */
 export function ScoreEntry({ value, onChange, disabled }: Props) {
   const v = value ?? 0
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <button
-        className="score-btn"
-        onClick={() => !disabled && onChange(v + 1)}
+        className="bs-step"
+        onClick={() => !disabled && onChange(Math.max(0, v - 1))}
         disabled={disabled}
-        aria-label="increase"
-      >▲</button>
+        aria-label="decrease"
+      >−</button>
       <span
+        className="font-didot tnum"
         style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 22,
-          fontWeight: 700,
+          fontSize: 38,
+          lineHeight: 1,
           minWidth: 28,
           textAlign: 'center',
-          color: value == null ? 'rgba(27,26,20,0.3)' : 'var(--ink)',
+          color: value == null ? 'var(--faint)' : 'var(--ink)',
         }}
       >
         {value == null ? '–' : value}
       </span>
       <button
-        className="score-btn"
-        onClick={() => !disabled && onChange(Math.max(0, v - 1))}
+        className="bs-step"
+        onClick={() => !disabled && onChange(v + 1)}
         disabled={disabled}
-        aria-label="decrease"
-      >▼</button>
+        aria-label="increase"
+      >+</button>
     </div>
   )
 }

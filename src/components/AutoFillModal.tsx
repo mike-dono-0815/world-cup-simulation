@@ -15,85 +15,97 @@ export function AutoFillModal({ onApply, onClose }: Props) {
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(27,26,20,0.6)',
+        position: 'fixed', inset: 0, background: 'rgba(26,24,19,0.55)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 1000, padding: 16,
       }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
-        className="sticker-card"
-        style={{ borderRadius: 8, maxWidth: 480, width: '100%', padding: 0, overflow: 'hidden' }}
+        className="bs-card"
+        style={{ maxWidth: 520, width: '100%', maxHeight: '90vh', overflow: 'auto' }}
       >
-        <div className="foil-band" />
-        <div style={{ padding: '16px 20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <header className="double-rule" style={{ padding: '16px 22px 14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
             <div>
-              <div className="font-archivo" style={{ fontSize: 18, color: 'var(--navy)' }}>Auto Fill</div>
-              <div style={{ fontSize: 11, color: 'rgba(27,26,20,0.5)' }}>Fills all unplayed matches using the chosen strategy</div>
+              <div className="smallcaps" style={{ marginBottom: 4 }}>The Oracle</div>
+              <div className="font-didot" style={{ fontSize: 30, lineHeight: 1, letterSpacing: '-0.005em' }}>
+                Auto-fill remaining
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6, fontStyle: 'italic' }}>
+                Choose a forecasting temperament to fill all unplayed matches.
+              </div>
             </div>
             <button
               onClick={onClose}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--ink)', lineHeight: 1 }}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: 24, color: 'var(--muted)', lineHeight: 1, padding: 0,
+              }}
+              aria-label="close"
             >×</button>
           </div>
+        </header>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {STRATEGIES.map(s => {
-              const { label, short, description } = STRATEGY_LABELS[s]
-              const isSelected = s === selected
-              return (
-                <button
-                  key={s}
-                  onClick={() => setSelected(s)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px',
-                    border: isSelected ? '1.5px solid var(--navy)' : '1.5px solid rgba(27,26,20,0.2)',
-                    background: isSelected ? 'rgba(27,58,107,0.06)' : 'transparent',
-                    borderRadius: 4, cursor: 'pointer', textAlign: 'left', transition: 'all 0.1s',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700,
-                      padding: '2px 5px', background: isSelected ? 'var(--navy)' : 'rgba(27,26,20,0.12)',
-                      color: isSelected ? 'white' : 'var(--navy)', letterSpacing: '0.05em',
-                      whiteSpace: 'nowrap', flexShrink: 0, borderRadius: 2,
-                    }}
-                  >
-                    {short}
+        <div style={{ padding: '14px 22px', display: 'flex', flexDirection: 'column', gap: 0 }}>
+          {STRATEGIES.map((s, i) => {
+            const { label, short, description } = STRATEGY_LABELS[s]
+            const isSelected = s === selected
+            return (
+              <button
+                key={s}
+                onClick={() => setSelected(s)}
+                style={{
+                  display: 'flex', alignItems: 'baseline', gap: 14, padding: '12px 4px',
+                  border: 'none',
+                  borderBottom: i < STRATEGIES.length - 1 ? '1px solid var(--hairline)' : 'none',
+                  background: 'transparent',
+                  cursor: 'pointer', textAlign: 'left',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <span className="font-didot tnum" style={{
+                  fontSize: 22, color: isSelected ? 'var(--ink)' : 'var(--faint)',
+                  lineHeight: 1, minWidth: 28,
+                }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 2,
+                  }}>
+                    <span className="font-didot" style={{
+                      fontSize: 18, lineHeight: 1.1,
+                      color: isSelected ? 'var(--ink)' : 'var(--muted)',
+                    }}>
+                      {label}
+                    </span>
+                    <span className="smallcaps" style={{ fontSize: 9 }}>{short}</span>
                   </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)' }}>{label}</div>
-                    <div style={{ fontSize: 11, color: 'rgba(27,26,20,0.55)' }}>{description}</div>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.4 }}>
+                    {description}
                   </div>
-                  {isSelected && (
-                    <div style={{ marginLeft: 'auto', flexShrink: 0, color: 'var(--navy)', fontSize: 14 }}>✓</div>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16, paddingTop: 12, borderTop: '1px dashed rgba(27,26,20,0.2)' }}>
-            <button
-              onClick={onClose}
-              style={{
-                padding: '6px 16px', border: '1.5px solid rgba(27,26,20,0.3)',
-                background: 'transparent', cursor: 'pointer', fontSize: 13, fontWeight: 600, borderRadius: 3,
-              }}
-            >Cancel</button>
-            <button
-              onClick={() => { onApply(selected); onClose() }}
-              style={{
-                padding: '6px 18px', border: '1.5px solid var(--navy)',
-                background: 'var(--navy)', color: 'white', cursor: 'pointer',
-                fontSize: 13, fontWeight: 700, borderRadius: 3,
-                fontFamily: "'Archivo Black', sans-serif", letterSpacing: '0.04em',
-              }}
-            >Apply</button>
-          </div>
+                </div>
+                <span style={{
+                  width: 14, height: 14, borderRadius: '50%',
+                  border: '1.5px solid var(--ink)',
+                  background: isSelected ? 'var(--ink)' : 'transparent',
+                  flexShrink: 0, alignSelf: 'center',
+                }} />
+              </button>
+            )
+          })}
         </div>
+
+        <footer style={{
+          padding: '12px 22px', borderTop: '1px solid var(--ink)',
+          display: 'flex', justifyContent: 'flex-end', gap: 8,
+        }}>
+          <button className="bs-btn" onClick={onClose}>Cancel</button>
+          <button className="bs-btn primary" onClick={() => { onApply(selected); onClose() }}>
+            Apply
+          </button>
+        </footer>
       </div>
     </div>
   )

@@ -13,31 +13,39 @@ interface Props {
 
 export function GroupTab({ groupId, matches, standings, advancingThirds, results, onUpdate }: Props) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Standings table */}
-      <div className="sticker-card" style={{ borderRadius: 6, padding: '10px 12px' }}>
-        <div className="foil-band" style={{ margin: '-10px -12px 10px' }} />
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
-          <span className="font-archivo" style={{ fontSize: 18, color: 'var(--navy)' }}>Group {groupId}</span>
-          <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: 'rgba(27,26,20,0.4)' }}>STANDINGS</span>
-        </div>
-        <StandingsTable standings={standings} advancingThirds={advancingThirds} />
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <StandingsTable standings={standings} advancingThirds={advancingThirds} groupId={groupId} />
 
-      {/* Match cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {matches.map(m => (
-          <MatchCard
-            key={m.serial}
-            label={`#${m.serial}`}
-            home={{ name: m.home, flagCode: m.homeFlagCode }}
-            away={{ name: m.away, flagCode: m.awayFlagCode }}
-            result={results[m.serial]}
-            onUpdate={r => onUpdate(m.serial, r)}
-            isKO={false}
-          />
-        ))}
-      </div>
+      <section>
+        <div style={{
+          display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 12,
+          paddingBottom: 8, borderBottom: '1px solid var(--ink)',
+        }}>
+          <h3 className="font-didot" style={{ fontSize: 24, margin: 0, lineHeight: 1 }}>
+            The Fixtures
+          </h3>
+          <span className="smallcaps">Six matches · top two advance</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {matches.map(m => (
+            <MatchCard
+              key={m.serial}
+              label={`#${m.serial}`}
+              serial={m.serial}
+              date={m.date}
+              venue={m.venue}
+              oddsHome={m.oddsHome}
+              oddsDraw={m.oddsDraw}
+              oddsAway={m.oddsAway}
+              home={{ name: m.home, flagCode: m.homeFlagCode }}
+              away={{ name: m.away, flagCode: m.awayFlagCode }}
+              result={results[m.serial]}
+              onUpdate={r => onUpdate(m.serial, r)}
+              isKO={false}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

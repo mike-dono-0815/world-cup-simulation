@@ -3,63 +3,101 @@ import { Flag } from './Flag'
 
 interface Props {
   standings: GroupStanding[]
-  advancingThirds: Set<string>  // team names of 3rd-place teams currently in top 8
+  advancingThirds: Set<string>
+  groupId: string
 }
 
-export function StandingsTable({ standings, advancingThirds }: Props) {
-  return (
-    <div style={{ overflowX: 'auto' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
-        <thead>
-          <tr style={{ borderBottom: '1.5px solid var(--ink)', color: 'var(--navy)' }}>
-            <th style={{ padding: '4px 6px', textAlign: 'left', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>Team</th>
-            <th style={{ padding: '4px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>Pld</th>
-            <th style={{ padding: '4px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>W</th>
-            <th style={{ padding: '4px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>D</th>
-            <th style={{ padding: '4px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>L</th>
-            <th style={{ padding: '4px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>GF:GA</th>
-            <th style={{ padding: '4px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>GD</th>
-            <th style={{ padding: '4px 6px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700 }}>Pts</th>
-          </tr>
-        </thead>
-        <tbody>
-          {standings.map((s, i) => {
-            const isAutoAdvance = i < 2
-            const isThirdAdvance = i === 2 && advancingThirds.has(s.team)
-            const bg = isAutoAdvance
-              ? 'rgba(46,107,59,0.10)'
-              : isThirdAdvance
-              ? 'rgba(46,107,59,0.05)'
-              : 'transparent'
-            const borderLeft = isAutoAdvance
-              ? '3px solid var(--pitch)'
-              : isThirdAdvance
-              ? '3px dashed var(--pitch)'
-              : '3px solid transparent'
+export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
+  const playedTotal = standings.reduce((n, s) => n + s.played, 0)
+  const matchday = playedTotal === 0 ? 0 : Math.min(3, Math.ceil(playedTotal / 4))
+  const md = ['Pre-tournament', 'Matchday I', 'Matchday II', 'Matchday III'][matchday]
 
-            return (
-              <tr
-                key={s.team}
-                style={{ backgroundColor: bg, borderLeft, borderBottom: '1px solid rgba(27,26,20,0.1)' }}
-              >
-                <td style={{ padding: '5px 6px', display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <Flag code={s.flagCode} size={18} />
-                  <span style={{ fontSize: 12, fontWeight: 500, whiteSpace: 'nowrap' }}>{s.team}</span>
-                </td>
-                <td style={{ padding: '5px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>{s.played}</td>
-                <td style={{ padding: '5px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>{s.won}</td>
-                <td style={{ padding: '5px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>{s.drawn}</td>
-                <td style={{ padding: '5px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>{s.lost}</td>
-                <td style={{ padding: '5px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>{s.gf}:{s.ga}</td>
-                <td style={{ padding: '5px 4px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", color: s.gd > 0 ? 'var(--pitch)' : s.gd < 0 ? 'var(--crimson)' : 'inherit' }}>
-                  {s.gd > 0 ? `+${s.gd}` : s.gd}
-                </td>
-                <td style={{ padding: '5px 6px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{s.points}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+  return (
+    <section className="bs-card">
+      <header style={{
+        display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+        padding: '14px 18px 12px',
+      }} className="double-rule">
+        <div>
+          <div className="smallcaps" style={{ marginBottom: 2 }}>The Table</div>
+          <div className="font-didot" style={{ fontSize: 26, lineHeight: 1, letterSpacing: '-0.005em' }}>
+            Group {groupId}, {md.toLowerCase()}
+          </div>
+        </div>
+        <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
+          <span style={{ color: 'var(--advance)' }}>↑ Top two advance</span><br/>
+          <span style={{ color: 'var(--faint)' }}>↗ Best four 3rd-place qualify</span>
+        </div>
+      </header>
+
+      <div style={{ overflowX: 'auto' }}>
+        <table className="bs-table">
+          <thead>
+            <tr>
+              <th className="first">Club</th>
+              <th>Pld</th>
+              <th>W</th>
+              <th>D</th>
+              <th>L</th>
+              <th>GF</th>
+              <th>GA</th>
+              <th>GD</th>
+              <th>Pts</th>
+              <th className="last">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {standings.map((s, i) => {
+              const isAdvance = i < 2
+              const isThird = i === 2 && advancingThirds.has(s.team)
+              const accent = isAdvance ? 'var(--advance)' : isThird ? 'var(--third)' : 'transparent'
+              return (
+                <tr key={s.team} className={i % 2 === 1 ? 'alt' : ''}>
+                  <td style={{ padding: '10px 0 10px 24px', position: 'relative', textAlign: 'left' }}>
+                    <div style={{
+                      position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, background: accent,
+                    }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span className="font-didot tnum" style={{
+                        fontSize: 18, lineHeight: 1, color: 'var(--muted)', minWidth: 14,
+                      }}>{i + 1}.</span>
+                      <Flag code={s.flagCode} size={22} />
+                      <span style={{ fontSize: 14, fontWeight: 600 }}>{s.team}</span>
+                    </div>
+                  </td>
+                  <td>{s.played}</td>
+                  <td>{s.won}</td>
+                  <td>{s.drawn}</td>
+                  <td>{s.lost}</td>
+                  <td>{s.gf}</td>
+                  <td>{s.ga}</td>
+                  <td style={{ color: s.gd > 0 ? 'var(--advance)' : s.gd < 0 ? 'var(--crimson)' : 'var(--muted)', fontWeight: 600 }}>
+                    {s.gd > 0 ? `+${s.gd}` : s.gd}
+                  </td>
+                  <td className="font-didot tnum" style={{ fontSize: 22, lineHeight: 1 }}>{s.points}</td>
+                  <td style={{ padding: '10px 24px 10px 4px', textAlign: 'right' }}>
+                    <span className="smallcaps" style={{
+                      fontSize: 9, letterSpacing: '0.14em', fontWeight: 600,
+                      color: isAdvance ? 'var(--advance)' : isThird ? '#8a6e2c' : 'var(--faint)',
+                    }}>
+                      {isAdvance ? '✓ Advance' : isThird ? '~ Third' : '— Out'}
+                    </span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <footer style={{
+        padding: '8px 18px', borderTop: '1px solid var(--hairline)',
+        fontSize: 10, letterSpacing: '0.06em', color: 'var(--muted)',
+        display: 'flex', justifyContent: 'space-between',
+      }}>
+        <span>Tiebreakers · Pts → GD → GF → FIFA rank</span>
+        <span>Updated continuously</span>
+      </footer>
+    </section>
   )
 }

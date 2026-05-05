@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import type { MatchResult, AutoFillStrategy } from './types'
+import type { MatchResult, AutoFillStrategy, KOMatch } from './types'
 import { GROUP_MATCHES, GROUPS } from './data/schedule'
 import { loadResults, saveResults, clearResults } from './lib/storage'
 import { calculateGroupStandings, rankThirdPlaceTeams } from './lib/standings'
@@ -10,217 +10,257 @@ import { KOSection } from './components/KOSection'
 import { AutoFillModal } from './components/AutoFillModal'
 import { Flag } from './components/Flag'
 
-type Tab = typeof GROUPS[number] | 'KO'
-const ALL_TABS: Tab[] = [...GROUPS, 'KO']
+type Phase = 'groups' | 'r32' | 'r16' | 'qf' | 'sf' | 'final'
+const PHASES: Array<{ id: Phase; num: string; label: string; total: number }> = [
+  { id: 'groups', num: 'I',   label: 'Group Stage',   total: 72 },
+  { id: 'r32',    num: 'II',  label: 'Round of 32',   total: 16 },
+  { id: 'r16',    num: 'III', label: 'Round of 16',   total: 8 },
+  { id: 'qf',     num: 'IV',  label: 'Quarter-Finals', total: 4 },
+  { id: 'sf',     num: 'V',   label: 'Semi-Finals',   total: 2 },
+  { id: 'final',  num: 'VI',  label: 'The Final',     total: 2 }, // 3rd place + final
+]
 
 export default function App() {
   const [results, setResults] = useState<Record<number, MatchResult>>(() => loadResults())
-  const [activeTab, setActiveTab] = useState<Tab>('A')
+  const [activePhase, setActivePhase] = useState<Phase>('groups')
+  const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number]>('A')
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
 
-  // Auto-save on every change
   useEffect(() => { saveResults(results) }, [results])
 
   const updateResult = (serial: number, r: MatchResult) => {
     setResults(prev => ({ ...prev, [serial]: r }))
   }
 
-  // Compute all group standings
   const allGroupStandings = useMemo(() => {
     const map = new Map<string, ReturnType<typeof calculateGroupStandings>>()
-    for (const g of GROUPS) {
-      const gMatches = GROUP_MATCHES.filter(m => m.group === g)
-      map.set(g, calculateGroupStandings(gMatches, results))
-    }
+    for (const g of GROUPS) map.set(g, calculateGroupStandings(GROUP_MATCHES.filter(m => m.group === g), results))
     return map
   }, [results])
 
-  // Compute advancing 3rd-place teams (top 8)
   const advancingThirds = useMemo(() => {
     const ranked = rankThirdPlaceTeams(allGroupStandings)
     return new Set(ranked.slice(0, 8).map(t => t.standing.team))
   }, [allGroupStandings])
 
-  // Compute KO matches
   const koMatches = useMemo(() => buildAllKOMatches(results), [results])
-
-  // Check if all group matches done
-  const groupMatchesDone = useMemo(
-    () => GROUP_MATCHES.every(m => {
-      const r = results[m.serial]
-      return r?.homeScore != null && r?.awayScore != null
-    }),
-    [results]
-  )
-
-  // Check tournament complete
   const champion = useMemo(() => getTournamentWinner(results, koMatches), [results, koMatches])
 
-  // Total played count
-  const totalMatches = 104
-  const playedCount = useMemo(() => {
-    let n = GROUP_MATCHES.filter(m => {
-      const r = results[m.serial]; return r?.homeScore != null && r?.awayScore != null
-    }).length
-    const koSerials = [
-      ...KO_SERIALS_BY_STAGE.r32, ...KO_SERIALS_BY_STAGE.r16,
-      ...KO_SERIALS_BY_STAGE.qf,  ...KO_SERIALS_BY_STAGE.sf,
-      ...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final,
-    ]
-    n += koSerials.filter(s => {
+  // Per-phase played counts
+  const phaseCounts = useMemo(() => {
+    const counts: Record<Phase, number> = { groups: 0, r32: 0, r16: 0, qf: 0, sf: 0, final: 0 }
+    for (const m of GROUP_MATCHES) {
+      const r = results[m.serial]
+      if (r?.homeScore != null && r?.awayScore != null) counts.groups++
+    }
+    const isPlayed = (s: number) => {
       const r = results[s]; return r?.homeScore != null && r?.awayScore != null
-    }).length
-    return n
+    }
+    counts.r32 = KO_SERIALS_BY_STAGE.r32.filter(isPlayed).length
+    counts.r16 = KO_SERIALS_BY_STAGE.r16.filter(isPlayed).length
+    counts.qf  = KO_SERIALS_BY_STAGE.qf.filter(isPlayed).length
+    counts.sf  = KO_SERIALS_BY_STAGE.sf.filter(isPlayed).length
+    counts.final = [...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final].filter(isPlayed).length
+    return counts
+  }, [results])
+
+  const totalPlayed = phaseCounts.groups + phaseCounts.r32 + phaseCounts.r16 + phaseCounts.qf + phaseCounts.sf + phaseCounts.final
+
+  // Per-group played count, for sub-nav progress
+  const groupCounts = useMemo(() => {
+    const c: Record<string, number> = {}
+    for (const g of GROUPS) {
+      c[g] = GROUP_MATCHES.filter(m => m.group === g && results[m.serial]?.homeScore != null && results[m.serial]?.awayScore != null).length
+    }
+    return c
   }, [results])
 
   function handleAutoFill(strategy: AutoFillStrategy) {
     const newResults = { ...results }
-
-    // Fill group matches
     for (const m of GROUP_MATCHES) {
       const r = newResults[m.serial]
       if (r?.homeScore == null || r?.awayScore == null) {
-        const filled = autoFillGroupMatch(m, strategy)
-        newResults[m.serial] = filled
+        newResults[m.serial] = autoFillGroupMatch(m, strategy)
       }
     }
-
-    // Fill KO rounds in order (recompute after each round)
     const koOrder = [
-      ...KO_SERIALS_BY_STAGE.r32,
-      ...KO_SERIALS_BY_STAGE.r16,
-      ...KO_SERIALS_BY_STAGE.qf,
-      ...KO_SERIALS_BY_STAGE.sf,
-      [...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final],
-    ].flat()
-
+      ...KO_SERIALS_BY_STAGE.r32, ...KO_SERIALS_BY_STAGE.r16,
+      ...KO_SERIALS_BY_STAGE.qf, ...KO_SERIALS_BY_STAGE.sf,
+      ...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final,
+    ]
     for (const serial of koOrder) {
       const r = newResults[serial]
       if (r?.homeScore != null && r?.awayScore != null) continue
-
       const freshKO = buildAllKOMatches(newResults)
       const m = freshKO.find(x => x.serial === serial)
       if (!m?.home || !m?.away) continue
-
       const filled = autoFillKOMatch(m, strategy)
       if (filled) newResults[serial] = filled
     }
-
     setResults(newResults)
   }
 
   function handleReset() {
-    clearResults()
-    setResults({})
-    setShowResetConfirm(false)
+    clearResults(); setResults({}); setShowResetConfirm(false)
   }
 
-  const progress = Math.round((playedCount / totalMatches) * 100)
+  const koStageForPhase: Record<Exclude<Phase,'groups'>, KOMatch['stage'] | 'all'> = {
+    r32: 'r32', r16: 'r16', qf: 'qf', sf: 'sf', final: 'all', // 'final' phase shows 3rd-place + final
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <header style={{ background: 'var(--navy)', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div className="foil-band" />
-        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-            <span className="gold-foil-text font-archivo" style={{ fontSize: 20 }}>
-              WC 2026 SIMULATOR
-            </span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontFamily: "'JetBrains Mono', monospace" }}>
-              {playedCount}/{totalMatches}
-            </span>
+      {/* Masthead */}
+      <header style={{
+        background: 'var(--paper)', position: 'sticky', top: 0, zIndex: 100,
+        borderBottom: '1px solid var(--ink)',
+      }}>
+        <div className="bs-page-pad" style={{
+          maxWidth: 1240, margin: '0 auto', padding: '18px 32px 10px',
+        }}>
+          <div style={{
+            display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12,
+            marginBottom: 6, flexWrap: 'wrap',
+          }}>
+            <div className="smallcaps">
+              Vol. XXIII · Estd. 2026 · United Hosts: USA · CAN · MEX
+            </div>
+            <div className="smallcaps">
+              {totalPlayed}/104 matches reported
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button
-              onClick={() => setShowAutoFill(true)}
-              style={{
-                padding: '5px 14px', background: 'var(--gold)', border: '1.5px solid var(--gold-light)',
-                color: 'var(--ink)', cursor: 'pointer', fontSize: 12, fontWeight: 700,
-                fontFamily: "'Archivo Black', sans-serif", letterSpacing: '0.04em', borderRadius: 3,
-              }}
-            >
-              AUTO FILL
-            </button>
-            {playedCount > 0 && (
-              <button
-                onClick={() => setShowResetConfirm(true)}
-                style={{
-                  padding: '5px 12px', background: 'transparent',
-                  border: '1.5px solid rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.6)',
-                  cursor: 'pointer', fontSize: 11, fontWeight: 600, borderRadius: 3,
-                }}
-              >
-                Reset
-              </button>
-            )}
+
+          <div className="double-rule" style={{ paddingBottom: 8, marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+              <h1 className="font-didot bs-masthead-title" style={{
+                margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
+              }}>
+                The World Cup Chronicle
+              </h1>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
+                  Auto-fill
+                </button>
+                {totalPlayed > 0 && (
+                  <button className="bs-btn danger" onClick={() => setShowResetConfirm(true)}>
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+            <div style={{
+              fontSize: 13, fontStyle: 'italic', color: 'var(--muted)', marginTop: 4,
+            }}>
+              "All Eyes on the Beautiful Game" — A Daily Forecast of the 2026 World Cup
+            </div>
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div style={{ height: 3, background: 'rgba(255,255,255,0.1)' }}>
-          <div style={{ height: '100%', background: 'var(--gold)', width: `${progress}%`, transition: 'width 0.3s' }} />
-        </div>
+        {/* Phase rail */}
+        <nav style={{
+          maxWidth: 1240, margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: `repeat(${PHASES.length}, 1fr)`,
+          borderTop: '1px solid var(--ink)',
+          borderBottom: '1px solid var(--ink)',
+        }}>
+          {PHASES.map((p, i) => {
+            const isActive = activePhase === p.id
+            const played = phaseCounts[p.id]
+            return (
+              <button
+                key={p.id}
+                className={`bs-phase${isActive ? ' active' : ''}`}
+                onClick={() => setActivePhase(p.id)}
+                style={i < PHASES.length - 1 ? { borderRight: '1px solid var(--ink)' } : undefined}
+              >
+                <span className="bs-phase-eyebrow">Phase {p.num}</span>
+                <span className="bs-phase-title">{p.label}</span>
+                <span className="bs-phase-meta">{played}/{p.total} reported</span>
+              </button>
+            )
+          })}
+        </nav>
+
+        {/* Group sub-nav (only when groups phase active) */}
+        {activePhase === 'groups' && (
+          <div className="bs-page-pad" style={{
+            maxWidth: 1240, margin: '0 auto', padding: '10px 32px 8px',
+            borderBottom: '1px solid var(--hairline)',
+            display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, rowGap: 6,
+          }}>
+            <span className="smallcaps" style={{ marginRight: 8 }}>The Groups</span>
+            {GROUPS.map((g, i) => (
+              <span key={g} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <button
+                  className={`bs-group${activeGroup === g ? ' active' : ''}`}
+                  onClick={() => setActiveGroup(g)}
+                >
+                  Group {g}
+                  <span className="tnum" style={{
+                    fontSize: 10, fontWeight: 500,
+                    color: groupCounts[g] === 6 ? 'var(--advance)' : 'var(--faint)',
+                  }}>
+                    {groupCounts[g]}/6
+                  </span>
+                </button>
+                {i < GROUPS.length - 1 && (
+                  <span style={{ color: 'var(--faint)', fontSize: 10 }}>·</span>
+                )}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       {/* Champion banner */}
       {champion && (
-        <div style={{
-          background: 'linear-gradient(135deg, var(--navy), #2d5a9e)',
-          borderBottom: '2px solid var(--gold)',
-          padding: '12px 16px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-        }}>
-          <span className="gold-foil-text font-archivo" style={{ fontSize: 16 }}>🏆 WORLD CHAMPION</span>
-          <Flag code={champion.flagCode} size={28} />
-          <span style={{ color: 'white', fontSize: 16, fontWeight: 700 }}>{champion.name}</span>
+        <div className="bs-champion">
+          <span className="smallcaps" style={{ color: 'rgba(242,237,224,0.7)', letterSpacing: '0.22em' }}>
+            World Champion
+          </span>
+          <Flag code={champion.flagCode} size={32} />
+          <span className="font-didot" style={{ fontSize: 30, lineHeight: 1 }}>
+            {champion.name}
+          </span>
         </div>
       )}
 
-      {/* Tab bar */}
-      <div style={{
-        borderBottom: '1.5px solid var(--ink)',
-        background: 'var(--cream)',
-        overflowX: 'auto',
-        display: 'flex',
-        flexShrink: 0,
+      {/* Main */}
+      <main className="bs-page-pad" style={{
+        flex: 1, padding: '24px 32px 48px', maxWidth: 1240, width: '100%', margin: '0 auto',
       }}>
-        {ALL_TABS.map(tab => (
-          <button
-            key={tab}
-            className={`tab-btn${activeTab === tab ? ' active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab === 'KO' ? 'KNOCKOUT' : `GRP ${tab}`}
-            {tab !== 'KO' && groupMatchesDone && activeTab !== tab && (
-              <span style={{ marginLeft: 4, fontSize: 9, color: 'var(--pitch)' }}>✓</span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Main content */}
-      <main style={{ flex: 1, padding: 16, maxWidth: 1200, width: '100%', margin: '0 auto' }}>
-        {activeTab === 'KO' ? (
-          <KOSection
-            koMatches={koMatches}
-            results={results}
-            onUpdate={updateResult}
-          />
-        ) : (
+        {activePhase === 'groups' ? (
           <GroupTab
-            groupId={activeTab}
-            matches={GROUP_MATCHES.filter(m => m.group === activeTab)}
-            standings={allGroupStandings.get(activeTab) ?? []}
+            groupId={activeGroup}
+            matches={GROUP_MATCHES.filter(m => m.group === activeGroup)}
+            standings={allGroupStandings.get(activeGroup) ?? []}
             advancingThirds={advancingThirds}
             results={results}
             onUpdate={updateResult}
           />
+        ) : (
+          <KOSection
+            koMatches={koMatches}
+            results={results}
+            onUpdate={updateResult}
+            filterStage={koStageForPhase[activePhase]}
+          />
         )}
       </main>
 
-      {/* Auto Fill modal */}
+      {/* Footer */}
+      <footer style={{
+        borderTop: '1px solid var(--hairline)',
+        padding: '14px 32px',
+        textAlign: 'center',
+      }}>
+        <div className="smallcaps">
+          The World Cup Chronicle · Forecasted, not foretold · 2026 ed.
+        </div>
+      </footer>
+
       {showAutoFill && (
         <AutoFillModal
           onApply={handleAutoFill}
@@ -228,29 +268,25 @@ export default function App() {
         />
       )}
 
-      {/* Reset confirm */}
       {showResetConfirm && (
         <div
           style={{
-            position: 'fixed', inset: 0, background: 'rgba(27,26,20,0.7)',
+            position: 'fixed', inset: 0, background: 'rgba(26,24,19,0.55)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16,
           }}
           onClick={e => { if (e.target === e.currentTarget) setShowResetConfirm(false) }}
         >
-          <div className="sticker-card" style={{ borderRadius: 8, padding: 24, maxWidth: 340, width: '100%' }}>
-            <div className="font-archivo" style={{ fontSize: 18, color: 'var(--crimson)', marginBottom: 8 }}>Reset All Results?</div>
-            <p style={{ fontSize: 13, color: 'rgba(27,26,20,0.7)', marginBottom: 20 }}>
-              This will clear all {playedCount} entered results and start from scratch. This cannot be undone.
+          <div className="bs-card" style={{ padding: 24, maxWidth: 360, width: '100%' }}>
+            <div className="smallcaps" style={{ marginBottom: 4, color: 'var(--crimson)' }}>Erratum</div>
+            <div className="font-didot" style={{ fontSize: 26, lineHeight: 1.05, marginBottom: 10 }}>
+              Reset all results?
+            </div>
+            <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 18, lineHeight: 1.5 }}>
+              This clears all {totalPlayed} entered results and starts the simulation from scratch. This cannot be undone.
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button
-                onClick={() => setShowResetConfirm(false)}
-                style={{ padding: '6px 16px', border: '1.5px solid rgba(27,26,20,0.3)', background: 'transparent', cursor: 'pointer', fontSize: 13, fontWeight: 600, borderRadius: 3 }}
-              >Cancel</button>
-              <button
-                onClick={handleReset}
-                style={{ padding: '6px 18px', border: '1.5px solid var(--crimson)', background: 'var(--crimson)', color: 'white', cursor: 'pointer', fontSize: 13, fontWeight: 700, borderRadius: 3 }}
-              >Reset</button>
+              <button className="bs-btn" onClick={() => setShowResetConfirm(false)}>Cancel</button>
+              <button className="bs-btn danger" onClick={handleReset}>Reset</button>
             </div>
           </div>
         </div>
