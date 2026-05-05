@@ -141,7 +141,7 @@ export default function App() {
         <div className="bs-page-pad" style={{
           maxWidth: 1240, margin: '0 auto', padding: '18px 32px 10px',
         }}>
-          <div style={{
+          <div className="bs-masthead-meta" style={{
             display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12,
             marginBottom: 6, flexWrap: 'wrap',
           }}>
@@ -171,7 +171,7 @@ export default function App() {
                 )}
               </div>
             </div>
-            <div style={{
+            <div className="bs-masthead-tagline" style={{
               fontSize: 13, fontStyle: 'italic', color: 'var(--muted)', marginTop: 4,
             }}>
               "All Eyes on the Beautiful Game" — A Daily Forecast of the 2026 World Cup
@@ -181,12 +181,7 @@ export default function App() {
 
         {/* Phase rail */}
         <div className="bs-phase-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
-          <nav style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${PHASES.length}, 1fr)`,
-            borderTop: '1px solid var(--ink)',
-            borderBottom: '1px solid var(--ink)',
-          }}>
+          <nav className="bs-phase-rail">
             {PHASES.map((p) => {
               const isActive = activePhase === p.id
               const played = phaseCounts[p.id]
@@ -210,9 +205,7 @@ export default function App() {
         {activePhase === 'groups' && (
           <div className="bs-phase-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
           <div style={{ borderBottom: '1px solid var(--hairline)', padding: '10px 0 8px' }}>
-          <div style={{
-            display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, rowGap: 6,
-          }}>
+          <div className="bs-group-rail">
             {GROUPS.map((g, i) => (
               <span key={g} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <button

@@ -220,7 +220,24 @@ body {
   gap: 14px;
 }
 
-/* Smaller breakpoints */
+/* Phase rail — desktop grid, mobile scroll strip */
+.bs-phase-rail {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+/* Group rail — desktop wrap, mobile scroll strip */
+.bs-group-rail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  row-gap: 6px;
+}
+
+/* Tablet */
 @media (max-width: 720px) {
   .bs-phase-title { font-size: 17px; }
   .bs-phase { padding: 10px 4px; }
@@ -228,4 +245,37 @@ body {
   .bs-masthead-title { font-size: 38px !important; }
   .bs-page-pad { padding-left: 16px !important; padding-right: 16px !important; }
   .bs-phase-nav { padding-left: 16px !important; padding-right: 16px !important; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  /* Masthead: hide decorative rows, shrink title, tighten padding */
+  .bs-masthead-meta { display: none !important; }
+  .bs-masthead-tagline { display: none !important; }
+  .bs-masthead-title { font-size: 26px !important; line-height: 1 !important; }
+  header .bs-page-pad { padding-top: 10px !important; padding-bottom: 6px !important; }
+
+  /* Phase rail: horizontal scroll strip */
+  .bs-phase-rail {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .bs-phase-rail::-webkit-scrollbar { display: none; }
+  .bs-phase { flex-shrink: 0; padding: 8px 12px; min-width: 88px; }
+  .bs-phase-eyebrow { display: none; }
+  .bs-phase-meta { display: none; }
+  .bs-phase-title { font-size: 14px !important; }
+
+  /* Group rail: single-row horizontal scroll */
+  .bs-group-rail {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .bs-group-rail::-webkit-scrollbar { display: none; }
 }
