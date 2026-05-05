@@ -5,27 +5,35 @@ import { loadResults, saveResults, clearResults } from './lib/storage'
 import { calculateGroupStandings, rankThirdPlaceTeams } from './lib/standings'
 import { buildAllKOMatches, getTournamentWinner, KO_SERIALS_BY_STAGE } from './lib/bracket'
 import { autoFillGroupMatch, autoFillKOMatch } from './lib/autofill'
+import { useLanguage } from './lib/LanguageContext'
 import { GroupTab } from './components/GroupTab'
 import { KOSection } from './components/KOSection'
 import { AutoFillModal } from './components/AutoFillModal'
+import { LanguageSelector } from './components/LanguageSelector'
 import { Flag } from './components/Flag'
 
 type Phase = 'groups' | 'r32' | 'r16' | 'qf' | 'sf' | 'final'
-const PHASES: Array<{ id: Phase; num: string; label: string; total: number }> = [
-  { id: 'groups', num: 'I',   label: 'Group Stage',   total: 72 },
-  { id: 'r32',    num: 'II',  label: 'Round of 32',   total: 16 },
-  { id: 'r16',    num: 'III', label: 'Round of 16',   total: 8 },
-  { id: 'qf',     num: 'IV',  label: 'Quarter-Finals', total: 4 },
-  { id: 'sf',     num: 'V',   label: 'Semi-Finals',   total: 2 },
-  { id: 'final',  num: 'VI',  label: 'The Final',     total: 2 }, // 3rd place + final
+const PHASES: Array<{ id: Phase; num: string; total: number }> = [
+  { id: 'groups', num: 'I',   total: 72 },
+  { id: 'r32',    num: 'II',  total: 16 },
+  { id: 'r16',    num: 'III', total: 8 },
+  { id: 'qf',     num: 'IV',  total: 4 },
+  { id: 'sf',     num: 'V',   total: 2 },
+  { id: 'final',  num: 'VI',  total: 2 },
 ]
 
 export default function App() {
+  const { t } = useLanguage()
   const [results, setResults] = useState<Record<number, MatchResult>>(() => loadResults())
   const [activePhase, setActivePhase] = useState<Phase>('groups')
   const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number]>('A')
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
+
+  const phaseLabel = useMemo(() => ({
+    groups: t.phase_groups, r32: t.phase_r32, r16: t.phase_r16,
+    qf: t.phase_qf, sf: t.phase_sf, final: t.phase_final,
+  } as Record<Phase, string>), [t])
 
   useEffect(() => { saveResults(results) }, [results])
 
@@ -107,7 +115,6 @@ export default function App() {
   , [fillPhase])
 
   const fillInfo = useMemo(() => {
-    const phase = PHASES.find(p => p.id === fillPhase)!
     const groupPending = fillPhase === 'groups'
       ? GROUP_MATCHES.filter(m => results[m.serial]?.homeScore == null).length
       : 0
@@ -115,7 +122,7 @@ export default function App() {
       fillPhaseStages.includes(ko.stage) && ko.home && ko.away && results[ko.serial]?.homeScore == null
     ).length
     const pending = groupPending + koPending
-    return { label: phase.label, played: totalPlayed, total: totalPlayed + pending }
+    return { phaseId: fillPhase, played: totalPlayed, total: totalPlayed + pending }
   }, [fillPhase, fillPhaseStages, results, totalPlayed, koMatches])
 
   function handleAutoFill(strategy: AutoFillStrategy) {
@@ -167,12 +174,8 @@ export default function App() {
             display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12,
             marginBottom: 6, flexWrap: 'wrap',
           }}>
-            <div className="smallcaps">
-              Vol. XXIII · Estd. 2026 · United Hosts: USA · CAN · MEX
-            </div>
-            <div className="smallcaps">
-              {totalPlayed}/104 matches reported
-            </div>
+            <div className="smallcaps">{t.masthead_meta}</div>
+            <div className="smallcaps">{t.matches_reported(totalPlayed)}</div>
           </div>
 
           <div className="double-rule" style={{ paddingBottom: 8, marginBottom: 8 }}>
@@ -180,15 +183,16 @@ export default function App() {
               <h1 className="font-didot bs-masthead-title" style={{
                 margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
               }}>
-                The World Cup Chronicle
+                {t.title}
               </h1>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <LanguageSelector />
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
-                  Auto-fill
+                  {t.btn_autofill}
                 </button>
                 {totalPlayed > 0 && (
                   <button className="bs-btn danger" onClick={() => setShowResetConfirm(true)}>
-                    Reset
+                    {t.btn_reset}
                   </button>
                 )}
               </div>
@@ -196,7 +200,7 @@ export default function App() {
             <div className="bs-masthead-tagline" style={{
               fontSize: 13, fontStyle: 'italic', color: 'var(--muted)', marginTop: 4,
             }}>
-              "All Eyes on the Beautiful Game" — A Daily Forecast of the 2026 World Cup
+              {t.tagline}
             </div>
           </div>
         </div>
@@ -215,8 +219,8 @@ export default function App() {
                   style={{ borderRight: '1px solid var(--ink)' }}
                 >
                   <span className="bs-phase-eyebrow">Phase {p.num}</span>
-                  <span className="bs-phase-title">{p.label}</span>
-                  <span className="bs-phase-meta">{played}/{p.total} reported</span>
+                  <span className="bs-phase-title">{phaseLabel[p.id]}</span>
+                  <span className="bs-phase-meta">{t.n_reported(played, p.total)}</span>
                 </button>
               )
             })}
@@ -234,7 +238,7 @@ export default function App() {
                   className={`bs-group${activeGroup === g ? ' active' : ''}`}
                   onClick={() => setActiveGroup(g)}
                 >
-                  <span>Group {g}</span>
+                  <span>{t.group_label(g, 0)}</span>
                   <span className="tnum" style={{
                     fontSize: 10, fontWeight: 500,
                     color: groupCounts[g] === 6 ? 'var(--advance)' : 'var(--faint)',
@@ -258,7 +262,7 @@ export default function App() {
         <div className="bs-phase-nav" style={{ width: '100%', maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
           <div className="bs-champion">
             <span className="smallcaps" style={{ color: 'rgba(242,237,224,0.7)', letterSpacing: '0.22em' }}>
-              World Champion
+              {t.world_champion}
             </span>
             <Flag code={champion.flagCode} size={32} />
             <span className="font-didot" style={{ fontSize: 30, lineHeight: 1 }}>
@@ -299,9 +303,7 @@ export default function App() {
         padding: '14px 32px',
         textAlign: 'center',
       }}>
-        <div className="smallcaps">
-          The World Cup Chronicle · Forecasted, not foretold · 2026 ed.
-        </div>
+        <div className="smallcaps">{t.footer}</div>
       </footer>
 
       {showAutoFill && (
@@ -321,16 +323,16 @@ export default function App() {
           onClick={e => { if (e.target === e.currentTarget) setShowResetConfirm(false) }}
         >
           <div className="bs-card" style={{ padding: 24, maxWidth: 360, width: '100%' }}>
-            <div className="smallcaps" style={{ marginBottom: 4, color: 'var(--crimson)' }}>Erratum</div>
+            <div className="smallcaps" style={{ marginBottom: 4, color: 'var(--crimson)' }}>{t.erratum}</div>
             <div className="font-didot" style={{ fontSize: 26, lineHeight: 1.05, marginBottom: 10 }}>
-              Reset all results?
+              {t.reset_title}
             </div>
             <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 18, lineHeight: 1.5 }}>
-              This clears all {totalPlayed} entered results and starts the simulation from scratch. This cannot be undone.
+              {t.reset_body(totalPlayed)}
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button className="bs-btn" onClick={() => setShowResetConfirm(false)}>Cancel</button>
-              <button className="bs-btn danger" onClick={handleReset}>Reset</button>
+              <button className="bs-btn" onClick={() => setShowResetConfirm(false)}>{t.btn_cancel}</button>
+              <button className="bs-btn danger" onClick={handleReset}>{t.btn_reset}</button>
             </div>
           </div>
         </div>

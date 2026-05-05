@@ -1,6 +1,7 @@
 import type { GroupMatch, MatchResult, GroupStanding } from '../types'
 import { StandingsTable } from './StandingsTable'
 import { MatchCard } from './MatchCard'
+import { useLanguage } from '../lib/LanguageContext'
 
 interface Props {
   groupId: string
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function GroupTab({ groupId, matches, standings, advancingThirds, results, onUpdate, onClear }: Props) {
+  const { t } = useLanguage()
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <StandingsTable standings={standings} advancingThirds={advancingThirds} groupId={groupId} />
@@ -23,9 +25,9 @@ export function GroupTab({ groupId, matches, standings, advancingThirds, results
           paddingBottom: 8, borderBottom: '1px solid var(--ink)',
         }}>
           <h3 className="font-didot" style={{ fontSize: 24, margin: 0, lineHeight: 1 }}>
-            The Fixtures
+            {t.the_fixtures}
           </h3>
-          <span className="smallcaps">Six matches · top two advance</span>
+          <span className="smallcaps">{t.six_matches_tagline}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {matches.map(m => (

@@ -1,5 +1,6 @@
 import type { GroupStanding } from '../types'
 import { Flag } from './Flag'
+import { useLanguage } from '../lib/LanguageContext'
 
 interface Props {
   standings: GroupStanding[]
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
+  const { t } = useLanguage()
   const playedTotal = standings.reduce((n, s) => n + s.played, 0)
   const matchesPlayed = playedTotal / 2
 
@@ -18,14 +20,14 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
         padding: '14px 18px 12px',
       }} className="double-rule">
         <div>
-          <div className="smallcaps" style={{ marginBottom: 2 }}>The Table</div>
+          <div className="smallcaps" style={{ marginBottom: 2 }}>{t.the_table}</div>
           <div className="font-didot" style={{ fontSize: 26, lineHeight: 1, letterSpacing: '-0.005em' }}>
-            Group {groupId}{matchesPlayed > 0 ? ` (${matchesPlayed}/6)` : ''}
+            {t.group_label(groupId, matchesPlayed)}
           </div>
         </div>
         <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
-          <span style={{ color: 'var(--advance)' }}>↑ Top two advance</span><br/>
-          <span style={{ color: 'var(--faint)' }}>↗ Best eight 3rd qualify</span>
+          <span style={{ color: 'var(--advance)' }}>{t.top_two_advance}</span><br/>
+          <span style={{ color: 'var(--faint)' }}>{t.best_eight_third}</span>
         </div>
       </header>
 
@@ -33,16 +35,16 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
         <table className="bs-table">
           <thead>
             <tr>
-              <th className="first">Club</th>
-              <th>Pld</th>
-              <th>W</th>
-              <th>D</th>
-              <th>L</th>
-              <th>GF</th>
-              <th>GA</th>
-              <th>GD</th>
-              <th>Pts</th>
-              <th className="last">Status</th>
+              <th className="first">{t.col_club}</th>
+              <th>{t.col_pld}</th>
+              <th>{t.col_w}</th>
+              <th>{t.col_d}</th>
+              <th>{t.col_l}</th>
+              <th>{t.col_gf}</th>
+              <th>{t.col_ga}</th>
+              <th>{t.col_gd}</th>
+              <th>{t.col_pts}</th>
+              <th className="last">{t.col_status}</th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +81,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
                       fontSize: 9, letterSpacing: '0.14em', fontWeight: 600,
                       color: isAdvance ? 'var(--advance)' : isThird ? '#8a6e2c' : 'var(--faint)',
                     }}>
-                      {isAdvance ? '✓ Advance' : isThird ? '~ Third' : '— Out'}
+                      {isAdvance ? t.status_advance : isThird ? t.status_third : t.status_out}
                     </span>
                   </td>
                 </tr>
@@ -94,8 +96,8 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
         fontSize: 10, letterSpacing: '0.06em', color: 'var(--muted)',
         display: 'flex', justifyContent: 'space-between',
       }}>
-        <span>Tiebreakers · Pts → GD → GF → FIFA rank</span>
-        <span>Updated continuously</span>
+        <span>{t.tiebreakers}</span>
+        <span>{t.updated_continuously}</span>
       </footer>
     </section>
   )

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import type { KOMatch, MatchResult } from '../types'
 import { MatchCard, TBDMatchCard } from './MatchCard'
+import { useLanguage } from '../lib/LanguageContext'
 
 function tbd(slot: string) {
   return { name: 'TBD', flagCode: '', qualLabel: slot }
 }
 import { Flag } from './Flag'
-import { STAGE_LABELS, KO_SERIALS_BY_STAGE, BRACKET_TREE } from '../lib/bracket'
+import { KO_SERIALS_BY_STAGE, BRACKET_TREE } from '../lib/bracket'
 
 interface Props {
   koMatches: KOMatch[]
@@ -36,6 +37,7 @@ function getPairs(stage: Stage): [number, number][] {
 }
 
 export function KOSection({ koMatches, results, onUpdate, onClear, filterStage = 'all' }: Props) {
+  const { t } = useLanguage()
   const bySerial = new Map(koMatches.map(m => [m.serial, m]))
   const stages = filterStage === 'all' ? STAGE_ORDER : Array.isArray(filterStage) ? filterStage : [filterStage as Stage]
 
@@ -58,10 +60,10 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
               marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--ink)',
             }}>
               <h2 className="font-didot" style={{ fontSize: 26, margin: 0, lineHeight: 1, letterSpacing: '-0.005em' }}>
-                {STAGE_LABELS[stage]}
+                {({ r32: t.phase_r32, r16: t.phase_r16, qf: t.phase_qf, sf: t.phase_sf, '3rd': t.phase_3rd, final: t.phase_final } as Record<Stage, string>)[stage]}
               </h2>
               <span className="smallcaps">
-                {playedInStage}/{stageMatches.length} reported
+                {t.ko_reported(playedInStage, stageMatches.length)}
               </span>
             </header>
 
@@ -127,14 +129,15 @@ function FinalCard({ match, result, onUpdate }: {
   result: MatchResult | undefined
   onUpdate: (serial: number, r: MatchResult) => void
 }) {
+  const { t } = useLanguage()
   const [activeScore, setActiveScore] = useState<'home' | 'away' | null>(null)
 
   if (!match.home && !match.away) {
     return (
       <div className="bs-card" style={{ padding: '32px 24px', textAlign: 'center' }}>
-        <div className="smallcaps" style={{ marginBottom: 6 }}>The Final</div>
+        <div className="smallcaps" style={{ marginBottom: 6 }}>{t.the_final_title}</div>
         <div className="font-didot" style={{ fontSize: 32, color: 'var(--faint)' }}>
-          Awaiting finalists
+          {t.awaiting_finalists}
         </div>
       </div>
     )
@@ -163,7 +166,7 @@ function FinalCard({ match, result, onUpdate }: {
       <div style={{ padding: '24px 28px' }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <div style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>
-            The Final
+            {t.the_final_title}
           </div>
         </div>
 
@@ -203,7 +206,7 @@ function FinalCard({ match, result, onUpdate }: {
             marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--hairline)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
           }}>
-            <span className="smallcaps">Penalties won by</span>
+            <span className="smallcaps">{t.penalties_won_by}</span>
             <button className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`} onClick={() => setPenalty('home')}>
               {home.name}
             </button>

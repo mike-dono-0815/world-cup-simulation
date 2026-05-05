@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { MatchResult } from '../types'
 import { ScoreEntry } from './ScoreEntry'
 import { Flag } from './Flag'
+import { useLanguage } from '../lib/LanguageContext'
 
 interface Team {
   name: string
@@ -41,6 +42,7 @@ export function MatchCard({
   label, serial, date, venue, oddsHome, oddsDraw, oddsAway,
   home, away, result, onUpdate, onClear, isKO, disabled,
 }: Props) {
+  const { t } = useLanguage()
   const hs = result?.homeScore ?? null
   const as_ = result?.awayScore ?? null
   const isDraw = hs != null && as_ != null && hs === as_
@@ -105,7 +107,7 @@ export function MatchCard({
             fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 700,
             color: isComplete ? 'var(--advance)' : 'var(--faint)',
           }}>
-            {isComplete ? '✓ Reported' : 'Pending'}
+            {isComplete ? t.reported : t.pending}
           </span>
           {onClear && (
             <button
@@ -117,8 +119,8 @@ export function MatchCard({
                 fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center',
                 visibility: hasResult ? 'visible' : 'hidden',
               }}
-              title="Clear result"
-              aria-label="Clear result"
+              title={t.clear_result_aria}
+              aria-label={t.clear_result_aria}
             >×</button>
           )}
         </div>
@@ -189,7 +191,7 @@ export function MatchCard({
           display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
         }}>
           <span className="smallcaps" style={{ fontSize: 9, letterSpacing: '0.22em' }}>
-            Penalties won by
+            {t.penalties_won_by}
           </span>
           <button
             className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`}
@@ -214,7 +216,7 @@ export function MatchCard({
           display: 'flex', alignItems: 'center', gap: 12,
         }}>
           <span className="smallcaps" style={{ fontSize: 9, letterSpacing: '0.18em' }}>
-            The Odds
+            {t.the_odds}
           </span>
           <div style={{ flex: 1, display: 'flex', height: 4, border: '1px solid var(--ink)' }}>
             <div style={{ width: `${pH}%`, background: '#365E3D' }} title={`Home ${pH}%`} />
@@ -233,6 +235,7 @@ export function MatchCard({
 export function TBDMatchCard({
   label, homeLabel, awayLabel,
 }: { label: string; homeLabel: string; awayLabel: string; home?: unknown; away?: unknown }) {
+  const { t } = useLanguage()
   return (
     <article className="bs-card" style={{ opacity: 0.5 }}>
       <header style={{
@@ -240,7 +243,7 @@ export function TBDMatchCard({
         display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
       }}>
         <span className="font-didot tnum" style={{ fontSize: 16, color: 'var(--muted)' }}>{label}</span>
-        <span className="smallcaps" style={{ fontSize: 9 }}>Awaits</span>
+        <span className="smallcaps" style={{ fontSize: 9 }}>{t.tbd_awaits}</span>
       </header>
       <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
         <div style={{ flex: 1 }}>
