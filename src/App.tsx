@@ -186,7 +186,6 @@ export default function App() {
                 {t.title}
               </h1>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <LanguageSelector />
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
                   {t.btn_autofill}
                 </button>
@@ -195,6 +194,7 @@ export default function App() {
                     {t.btn_reset}
                   </button>
                 )}
+                <LanguageSelector />
               </div>
             </div>
             <div className="bs-masthead-tagline" style={{
