@@ -189,7 +189,7 @@ export function MatchCard({
           display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
         }}>
           <span className="smallcaps" style={{ fontSize: 9, letterSpacing: '0.22em' }}>
-            Pens won by
+            Penalties won by
           </span>
           <button
             className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`}

@@ -204,7 +204,7 @@ function FinalCard({ match, result, onUpdate }: {
           marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--hairline)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
         }}>
-          <span className="smallcaps">Pens won by</span>
+          <span className="smallcaps">Penalties won by</span>
           <button className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`} onClick={() => setPenalty('home')}>
             {home.name}
           </button>
