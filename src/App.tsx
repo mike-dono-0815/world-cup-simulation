@@ -29,8 +29,23 @@ export default function App() {
 
   useEffect(() => { saveResults(results) }, [results])
 
+  function applyWithKOCleanup(
+    prev: Record<number, MatchResult>,
+    next: Record<number, MatchResult>
+  ): Record<number, MatchResult> {
+    const before = new Map(buildAllKOMatches(prev).map(m => [m.serial, m]))
+    for (const m of buildAllKOMatches(next)) {
+      const old = before.get(m.serial)
+      if (!old) continue
+      if (m.home?.name !== old.home?.name || m.away?.name !== old.away?.name) {
+        delete next[m.serial]
+      }
+    }
+    return next
+  }
+
   const updateResult = (serial: number, r: MatchResult) => {
-    setResults(prev => ({ ...prev, [serial]: r }))
+    setResults(prev => applyWithKOCleanup(prev, { ...prev, [serial]: r }))
   }
 
   const allGroupStandings = useMemo(() => {
@@ -124,7 +139,11 @@ export default function App() {
   }
 
   function clearResult(serial: number) {
-    setResults(prev => { const next = { ...prev }; delete next[serial]; return next })
+    setResults(prev => {
+      const next = { ...prev }
+      delete next[serial]
+      return applyWithKOCleanup(prev, next)
+    })
   }
 
   function handleReset() {
