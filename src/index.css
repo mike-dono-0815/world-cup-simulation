@@ -248,6 +248,7 @@ body {
   grid-template-columns: repeat(6, 1fr);
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
+  border-left: 1px solid var(--ink);
 }
 
 /* Group rail — desktop wrap, mobile scroll strip */
