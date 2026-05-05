@@ -165,7 +165,6 @@ function FinalCard({ match, result, onUpdate }: {
     <article className="bs-card" style={{ opacity: isPartial ? 0.65 : 1 }}>
       <div style={{ padding: '24px 28px' }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
-          <div className="smallcaps" style={{ marginBottom: 4 }}>The Final · Match № 31</div>
           <div className="font-didot" style={{ fontSize: 38, lineHeight: 1, letterSpacing: '-0.01em' }}>
             The Championship
           </div>
