@@ -25,7 +25,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
         </div>
         <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
           <span style={{ color: 'var(--advance)' }}>↑ Top two advance</span><br/>
-          <span style={{ color: 'var(--faint)' }}>↗ Best eight 3rd-place qualify</span>
+          <span style={{ color: 'var(--faint)' }}>↗ Best eight 3rd qualify</span>
         </div>
       </header>
 

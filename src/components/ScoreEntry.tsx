@@ -2,22 +2,24 @@ interface Props {
   value: number | null
   onChange: (v: number) => void
   disabled?: boolean
+  onTap?: () => void
+  isActive?: boolean
 }
 
-/** Score entry — Option B · hairline, left/right arrows. */
-export function ScoreEntry({ value, onChange, disabled }: Props) {
+/** Score entry — desktop: +/- steppers. Mobile: tappable digit (keypad managed by parent). */
+export function ScoreEntry({ value, onChange, disabled, onTap, isActive }: Props) {
   const v = value ?? 0
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <button
-        className="bs-step"
+        className="bs-step bs-score-step"
         onMouseDown={e => e.preventDefault()}
         onClick={() => !disabled && onChange(Math.max(0, v - 1))}
         disabled={disabled}
         aria-label="decrease"
       >−</button>
       <span
-        className="tnum"
+        className={`tnum bs-score-num${isActive ? ' active' : ''}`}
         style={{
           fontSize: 38,
           fontWeight: 700,
@@ -26,11 +28,12 @@ export function ScoreEntry({ value, onChange, disabled }: Props) {
           textAlign: 'center',
           color: value == null ? 'var(--faint)' : 'var(--ink)',
         }}
+        onClick={onTap}
       >
         {value == null ? '–' : value}
       </span>
       <button
-        className="bs-step"
+        className="bs-step bs-score-step"
         onMouseDown={e => e.preventDefault()}
         onClick={() => !disabled && onChange(v + 1)}
         disabled={disabled}

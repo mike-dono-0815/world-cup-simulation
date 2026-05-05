@@ -220,6 +220,28 @@ body {
   gap: 14px;
 }
 
+/* Number-pad keypad strip (rendered by MatchCard on mobile) */
+.bs-keypad {
+  display: none; /* shown only via mobile media query */
+  gap: 4px;
+  padding: 6px 12px 8px;
+  border-top: 1px solid var(--hairline);
+  background: rgba(26,24,19,0.025);
+}
+.bs-keypad-btn {
+  flex: 1;
+  height: 40px;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: 'Inter Tight', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  color: var(--ink);
+}
+.bs-keypad-btn:active { background: var(--ink); color: var(--paper); }
+
 /* Phase rail — desktop grid, mobile scroll strip */
 .bs-phase-rail {
   display: grid;
@@ -289,4 +311,10 @@ body {
   /* Standings table: hide Status column */
   .bs-table th:last-child,
   .bs-table td:last-child { display: none; }
+
+  /* Mobile number-pad: hide ± steppers, show tappable digit + keypad */
+  .bs-score-step { display: none !important; }
+  .bs-score-num { cursor: pointer; padding: 0 4px; border-bottom: 1.5px solid var(--hairline); }
+  .bs-score-num.active { color: var(--advance); border-bottom-color: var(--advance); }
+  .bs-keypad { display: flex; }
 }

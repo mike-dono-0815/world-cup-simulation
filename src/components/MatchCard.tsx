@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { MatchResult } from '../types'
 import { ScoreEntry } from './ScoreEntry'
 import { Flag } from './Flag'
@@ -57,6 +58,14 @@ export function MatchCard({
 
   const hasResult = hs != null && as_ != null
   const isComplete = hasResult && (!isKO || !isDraw || penWinner != null)
+
+  const [activeScore, setActiveScore] = useState<'home' | 'away' | null>(null)
+
+  function handleScoreTap(which: 'home' | 'away') {
+    if (disabled) return
+    if (window.innerWidth > 600) return
+    setActiveScore(prev => prev === which ? null : which)
+  }
 
   // Probability bar from odds (if provided)
   let pH = 0, pD = 0, pA = 0
@@ -134,9 +143,9 @@ export function MatchCard({
 
         {/* Score */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <ScoreEntry value={hs} onChange={setHome} disabled={disabled} />
+          <ScoreEntry value={hs} onChange={setHome} disabled={disabled} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
           <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
-          <ScoreEntry value={as_} onChange={setAway} disabled={disabled} />
+          <ScoreEntry value={as_} onChange={setAway} disabled={disabled} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
         </div>
 
         {/* Away */}
@@ -154,6 +163,24 @@ export function MatchCard({
           <Flag code={away.flagCode} size={26} />
         </div>
       </div>
+
+      {/* Mobile number-pad keypad strip */}
+      {activeScore && !disabled && (
+        <div className="bs-keypad">
+          {[0,1,2,3,4,5,6,7,8,9].map(d => (
+            <button
+              key={d}
+              className="bs-keypad-btn"
+              onMouseDown={e => e.preventDefault()}
+              onClick={() => {
+                if (activeScore === 'home') setHome(d)
+                else setAway(d)
+                setActiveScore(null)
+              }}
+            >{d}</button>
+          ))}
+        </div>
+      )}
 
       {/* Penalty picker (KO + draw only) */}
       {isKO && isDraw && !disabled && (
