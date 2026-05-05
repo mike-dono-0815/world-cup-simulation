@@ -70,19 +70,24 @@ export function MatchCard({
   return (
     <article className="bs-card" style={{ opacity: disabled ? 0.55 : 1 }}>
       {/* Header */}
-      <header style={{
+      <header className="bs-match-header" style={{
         padding: '10px 16px 8px', borderBottom: '1px solid var(--hairline)',
         display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap',
       }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, minWidth: 0 }}>
-          <span className="font-didot tnum" style={{ fontSize: 16, lineHeight: 1, color: 'var(--muted)' }}>
+          <span className="bs-match-serial font-didot tnum" style={{ fontSize: 16, lineHeight: 1, color: 'var(--muted)' }}>
             {serial != null ? `№ ${String(serial).padStart(2, '0')}` : label}
           </span>
-          {(date || venue) && (
-            <span className="smallcaps" style={{
+          {date && (
+            <span className="bs-match-date smallcaps" style={{
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
-              {[formatDate(date), venue].filter(Boolean).join(' · ')}
+              {formatDate(date)}
+            </span>
+          )}
+          {venue && (
+            <span className="bs-match-venue smallcaps" style={{ whiteSpace: 'nowrap' }}>
+              {date ? '· ' : ''}{venue}
             </span>
           )}
         </div>

@@ -278,4 +278,15 @@ body {
     scrollbar-width: none;
   }
   .bs-group-rail::-webkit-scrollbar { display: none; }
+
+  /* Match card header: keep serial + status on one row, hide venue */
+  .bs-match-header { flex-wrap: nowrap !important; }
+  .bs-match-header > div:first-child { flex: 1; min-width: 0; }
+  .bs-match-header > div:last-child { flex-shrink: 0; }
+  .bs-match-serial { white-space: nowrap; min-width: 52px; }
+  .bs-match-venue { display: none; }
+
+  /* Standings table: hide Status column */
+  .bs-table th:last-child,
+  .bs-table td:last-child { display: none; }
 }
