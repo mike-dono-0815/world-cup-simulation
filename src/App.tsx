@@ -86,40 +86,23 @@ export default function App() {
   }, [phaseCounts])
 
   const fillInfo = useMemo(() => {
-    // Simulate the full cascade to get an accurate "will be filled" count
-    let count = 0
-    const tmp = { ...results }
-    for (const m of GROUP_MATCHES) {
-      if (tmp[m.serial]?.homeScore == null) { count++; tmp[m.serial] = { homeScore: 1, awayScore: 0 } }
-    }
-    const koOrder: Array<KOMatch['stage']> = ['r32', 'r16', 'qf', 'sf', '3rd', 'final']
-    for (const stage of koOrder) {
-      for (const serial of KO_SERIALS_BY_STAGE[stage]) {
-        if (tmp[serial]?.homeScore != null) continue
-        const fresh = buildAllKOMatches(tmp)
-        const ko = fresh.find(x => x.serial === serial)
-        if (!ko?.home || !ko?.away) continue
-        count++
-        tmp[serial] = { homeScore: 1, awayScore: 0 }
-      }
-    }
     const phase = PHASES.find(p => p.id === fillPhase)!
-    return { label: phase.label, played: totalPlayed, total: totalPlayed + count }
-  }, [fillPhase, results, totalPlayed])
+    return { label: phase.label, played: phaseCounts[fillPhase], total: phase.total }
+  }, [fillPhase, phaseCounts])
 
   function handleAutoFill(strategy: AutoFillStrategy) {
     const newResults = { ...results }
-    // Fill all unfilled group matches
-    for (const m of GROUP_MATCHES) {
-      if (newResults[m.serial]?.homeScore == null || newResults[m.serial]?.awayScore == null) {
-        newResults[m.serial] = autoFillGroupMatch(m, strategy)
+    if (fillPhase === 'groups') {
+      for (const m of GROUP_MATCHES) {
+        if (newResults[m.serial]?.homeScore == null || newResults[m.serial]?.awayScore == null) {
+          newResults[m.serial] = autoFillGroupMatch(m, strategy)
+        }
       }
-    }
-    // Cascade through KO stages in order — as groups/earlier rounds fill in,
-    // later matches become deterministic and are filled in the same pass
-    const koOrder: Array<KOMatch['stage']> = ['r32', 'r16', 'qf', 'sf', '3rd', 'final']
-    for (const stage of koOrder) {
-      for (const serial of KO_SERIALS_BY_STAGE[stage]) {
+    } else {
+      const serials = fillPhase === 'final'
+        ? [...KO_SERIALS_BY_STAGE['3rd'], ...KO_SERIALS_BY_STAGE.final]
+        : KO_SERIALS_BY_STAGE[fillPhase]
+      for (const serial of serials) {
         if (newResults[serial]?.homeScore != null && newResults[serial]?.awayScore != null) continue
         const freshKO = buildAllKOMatches(newResults)
         const ko = freshKO.find(x => x.serial === serial)
