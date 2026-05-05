@@ -163,7 +163,7 @@ function FinalCard({ match, result, onUpdate }: {
       <div style={{ padding: '24px 28px' }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <div style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>
-            The Championship
+            The WC Final 2026
           </div>
         </div>
 
@@ -243,7 +243,7 @@ function ScoreBig({ value, onChange, disabled, onTap, isActive }: {
       <button className="bs-step bs-score-step" onMouseDown={e => e.preventDefault()} onClick={() => !disabled && onChange(Math.max(0, v - 1))} disabled={disabled}>−</button>
       <span
         className={`tnum bs-score-num${isActive ? ' active' : ''}`}
-        style={{ fontSize: 56, lineHeight: 1, minWidth: 40, textAlign: 'center', color: value == null ? 'var(--faint)' : 'var(--ink)' }}
+        style={{ fontSize: 56, fontWeight: 700, lineHeight: 1, minWidth: 40, textAlign: 'center', color: value == null ? 'var(--faint)' : 'var(--ink)' }}
         onClick={onTap}
       >
         {value == null ? '–' : value}
