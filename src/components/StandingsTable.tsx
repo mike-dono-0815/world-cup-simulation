@@ -21,7 +21,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
       }} className="double-rule">
         <div>
           <div className="smallcaps" style={{ marginBottom: 2 }}>{t.the_table}</div>
-          <div className="font-didot" style={{ fontSize: 26, lineHeight: 1, letterSpacing: '-0.005em' }}>
+          <div className="font-didot" style={{ fontSize: 24, lineHeight: 1, letterSpacing: '-0.005em' }}>
             {t.group_label(groupId, 0)}
             {matchesPlayed > 0 && (
               <span style={{ fontSize: 22 }}> ({matchesPlayed}/6)</span>
