@@ -20,7 +20,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
         <div>
           <div className="smallcaps" style={{ marginBottom: 2 }}>The Table</div>
           <div className="font-didot" style={{ fontSize: 26, lineHeight: 1, letterSpacing: '-0.005em' }}>
-            Group {groupId}{matchesPlayed > 0 ? ` (${matchesPlayed}/6 games played)` : ''}
+            Group {groupId}{matchesPlayed > 0 ? ` (${matchesPlayed}/6)` : ''}
           </div>
         </div>
         <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
