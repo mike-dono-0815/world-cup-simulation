@@ -24,7 +24,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
           <div className="font-didot" style={{ fontSize: 26, lineHeight: 1, letterSpacing: '-0.005em' }}>
             {t.group_label(groupId, 0)}
             {matchesPlayed > 0 && (
-              <span style={{ fontSize: 24 }}> ({matchesPlayed}/6)</span>
+              <span style={{ fontSize: 22 }}> ({matchesPlayed}/6)</span>
             )}
           </div>
         </div>
