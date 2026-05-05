@@ -60,16 +60,9 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
               display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12,
               marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--ink)',
             }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-                <span className="font-didot" style={{
-                  fontSize: 22, color: 'var(--muted)', lineHeight: 1, fontVariant: 'small-caps',
-                }}>
-                  {STAGE_NUM[stage]}.
-                </span>
-                <h2 className="font-didot" style={{ fontSize: 26, margin: 0, lineHeight: 1, letterSpacing: '-0.005em' }}>
-                  {STAGE_LABELS[stage]}
-                </h2>
-              </div>
+              <h2 className="font-didot" style={{ fontSize: 26, margin: 0, lineHeight: 1, letterSpacing: '-0.005em' }}>
+                {STAGE_LABELS[stage]}
+              </h2>
               <span className="smallcaps">
                 {playedInStage}/{stageMatches.length} reported
               </span>
