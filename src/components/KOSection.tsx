@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { KOMatch, MatchResult } from '../types'
 import { MatchCard, TBDMatchCard } from './MatchCard'
 
@@ -136,6 +137,8 @@ function FinalCard({ match, result, onUpdate }: {
   result: MatchResult | undefined
   onUpdate: (serial: number, r: MatchResult) => void
 }) {
+  const [activeScore, setActiveScore] = useState<'home' | 'away' | null>(null)
+
   if (!match.home && !match.away) {
     return (
       <div className="bs-card" style={{ padding: '32px 24px', textAlign: 'center' }}>
@@ -159,76 +162,104 @@ function FinalCard({ match, result, onUpdate }: {
   function setAway(v: number) { onUpdate(match.serial, { homeScore: hs, awayScore: v, penaltyWinner: undefined }) }
   function setPenalty(w: 'home' | 'away') { onUpdate(match.serial, { homeScore: hs, awayScore: as_, penaltyWinner: w }) }
 
+  function handleScoreTap(which: 'home' | 'away') {
+    if (isPartial) return
+    if (window.innerWidth > 600) return
+    setActiveScore(prev => prev === which ? null : which)
+  }
+
   return (
-    <article className="bs-card" style={{ padding: '24px 28px', opacity: isPartial ? 0.65 : 1 }}>
-      <div style={{ textAlign: 'center', marginBottom: 18 }}>
-        <div className="smallcaps" style={{ marginBottom: 4 }}>The Final · Match № 31</div>
-        <div className="font-didot" style={{ fontSize: 38, lineHeight: 1, letterSpacing: '-0.01em' }}>
-          The Championship
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 18, justifyContent: 'center' }}>
-        {/* Home */}
-        <div style={{ flex: 1, textAlign: 'right' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
-            <div>
-              <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{home.name}</div>
-              <div className="smallcaps" style={{ fontSize: 9, marginTop: 2 }}>{home.qualLabel}</div>
-            </div>
-            <Flag code={home.flagCode} size={44} />
+    <article className="bs-card" style={{ opacity: isPartial ? 0.65 : 1 }}>
+      <div style={{ padding: '24px 28px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 18 }}>
+          <div className="smallcaps" style={{ marginBottom: 4 }}>The Final · Match № 31</div>
+          <div className="font-didot" style={{ fontSize: 38, lineHeight: 1, letterSpacing: '-0.01em' }}>
+            The Championship
           </div>
         </div>
 
-        {/* Score */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <ScoreBig value={hs} onChange={setHome} disabled={isPartial} />
-          <span className="font-didot" style={{ fontSize: 36, color: 'var(--muted)' }}>–</span>
-          <ScoreBig value={as_} onChange={setAway} disabled={isPartial} />
-        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 18, justifyContent: 'center' }}>
+          {/* Home */}
+          <div style={{ flex: 1, textAlign: 'right' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{home.name}</div>
+                <div className="smallcaps" style={{ fontSize: 9, marginTop: 2 }}>{home.qualLabel}</div>
+              </div>
+              <Flag code={home.flagCode} size={44} />
+            </div>
+          </div>
 
-        {/* Away */}
-        <div style={{ flex: 1, textAlign: 'left' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
-            <Flag code={away.flagCode} size={44} />
-            <div>
-              <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{away.name}</div>
-              <div className="smallcaps" style={{ fontSize: 9, marginTop: 2 }}>{away.qualLabel}</div>
+          {/* Score */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <ScoreBig value={hs} onChange={setHome} disabled={isPartial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
+            <span className="font-didot" style={{ fontSize: 36, color: 'var(--muted)' }}>–</span>
+            <ScoreBig value={as_} onChange={setAway} disabled={isPartial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+          </div>
+
+          {/* Away */}
+          <div style={{ flex: 1, textAlign: 'left' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+              <Flag code={away.flagCode} size={44} />
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{away.name}</div>
+                <div className="smallcaps" style={{ fontSize: 9, marginTop: 2 }}>{away.qualLabel}</div>
+              </div>
             </div>
           </div>
         </div>
+
+        {isDraw && !isPartial && (
+          <div style={{
+            marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--hairline)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          }}>
+            <span className="smallcaps">Penalties won by</span>
+            <button className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`} onClick={() => setPenalty('home')}>
+              {home.name}
+            </button>
+            <button className={`bs-pen${penWinner === 'away' ? ' selected' : ''}`} onClick={() => setPenalty('away')}>
+              {away.name}
+            </button>
+          </div>
+        )}
       </div>
 
-      {isDraw && !isPartial && (
-        <div style={{
-          marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--hairline)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-        }}>
-          <span className="smallcaps">Penalties won by</span>
-          <button className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`} onClick={() => setPenalty('home')}>
-            {home.name}
-          </button>
-          <button className={`bs-pen${penWinner === 'away' ? ' selected' : ''}`} onClick={() => setPenalty('away')}>
-            {away.name}
-          </button>
+      {activeScore && !isPartial && (
+        <div className="bs-keypad">
+          {[0,1,2,3,4,5,6,7,8,9].map(d => (
+            <button
+              key={d}
+              className="bs-keypad-btn"
+              onMouseDown={e => e.preventDefault()}
+              onClick={() => {
+                if (activeScore === 'home') setHome(d)
+                else setAway(d)
+                setActiveScore(null)
+              }}
+            >{d}</button>
+          ))}
         </div>
       )}
     </article>
   )
 }
 
-function ScoreBig({ value, onChange, disabled }: { value: number | null; onChange: (v: number) => void; disabled?: boolean }) {
+function ScoreBig({ value, onChange, disabled, onTap, isActive }: {
+  value: number | null; onChange: (v: number) => void; disabled?: boolean; onTap?: () => void; isActive?: boolean
+}) {
   const v = value ?? 0
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <button className="bs-step" onClick={() => !disabled && onChange(Math.max(0, v - 1))} disabled={disabled}>−</button>
-      <span className="font-didot tnum" style={{
-        fontSize: 56, lineHeight: 1, minWidth: 40, textAlign: 'center',
-        color: value == null ? 'var(--faint)' : 'var(--ink)',
-      }}>
+      <button className="bs-step bs-score-step" onMouseDown={e => e.preventDefault()} onClick={() => !disabled && onChange(Math.max(0, v - 1))} disabled={disabled}>−</button>
+      <span
+        className={`font-didot tnum bs-score-num${isActive ? ' active' : ''}`}
+        style={{ fontSize: 56, lineHeight: 1, minWidth: 40, textAlign: 'center', color: value == null ? 'var(--faint)' : 'var(--ink)' }}
+        onClick={onTap}
+      >
         {value == null ? '–' : value}
       </span>
-      <button className="bs-step" onClick={() => !disabled && onChange(v + 1)} disabled={disabled}>+</button>
+      <button className="bs-step bs-score-step" onMouseDown={e => e.preventDefault()} onClick={() => !disabled && onChange(v + 1)} disabled={disabled}>+</button>
     </div>
   )
 }
