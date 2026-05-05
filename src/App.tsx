@@ -198,7 +198,7 @@ export default function App() {
             borderTop: '1px solid var(--ink)',
             borderBottom: '1px solid var(--ink)',
           }}>
-            {PHASES.map((p, i) => {
+            {PHASES.map((p) => {
               const isActive = activePhase === p.id
               const played = phaseCounts[p.id]
               return (
