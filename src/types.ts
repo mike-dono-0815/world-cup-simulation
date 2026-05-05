@@ -33,6 +33,8 @@ export interface KOMatch {
   label: string           // 'M1'–'M31', '3PO'
   home: KOTeam | null     // null = not yet determined
   away: KOTeam | null
+  homeSlot: string        // e.g. '2A', '1F', 'W(M1)', 'Best 3rd'
+  awaySlot: string
   stage: 'r32' | 'r16' | 'qf' | 'sf' | '3rd' | 'final'
 }
 

@@ -134,10 +134,19 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   const top8Groups = top8Thirds.map(t => t.group)
   const thirdByGroup = new Map(top8Thirds.map(t => [t.group, t.standing]))
 
-  // Step 3: look up assignment
+  // 3rd-place assignments are only stable once every group is fully played
+  const allGroupsDone = 'ABCDEFGHIJKL'.split('').every(g => {
+    const gMatches = GROUP_MATCHES.filter(m => m.group === g)
+    return gMatches.every(m => {
+      const r = results[m.serial]
+      return r?.homeScore != null && r?.awayScore != null
+    })
+  })
+
+  // Step 3: look up assignment (only when all 12 groups are finalised)
   const lookup = getAssignmentLookup()
   const key = [...top8Groups].sort().join('')
-  const assignments = lookup.get(key) // assignments[i] = opponent group letter for BEST3_SLOT_SERIALS[i]
+  const assignments = allGroupsDone ? lookup.get(key) : undefined
   const slotAssignment = new Map<number, string>()
   if (assignments) {
     for (let i = 0; i < 8; i++) {
@@ -174,22 +183,41 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   for (const [serialStr, homeSlot] of Object.entries(R32_BEST3)) {
     const serial = Number(serialStr)
     const homeTeam = resolveGroupSlot(homeSlot)
-    const assignedGroup = slotAssignment.get(serial)
     let awayTeam: KOTeam | null = null
-    if (assignedGroup) {
-      const s = thirdByGroup.get(assignedGroup)
-      // Only show if all group matches done
-      const gMatches = GROUP_MATCHES.filter(m => m.group === assignedGroup)
-      const allDone = gMatches.every(m => {
-        const r = results[m.serial]
-        return r?.homeScore != null && r?.awayScore != null
-      })
-      if (s && allDone) {
-        awayTeam = standingToKOTeam(s, `3${assignedGroup}`)
+    if (allGroupsDone) {
+      const assignedGroup = slotAssignment.get(serial)
+      if (assignedGroup) {
+        const s = thirdByGroup.get(assignedGroup)
+        if (s) awayTeam = standingToKOTeam(s, `3${assignedGroup}`)
       }
     }
     r32Teams.set(serial, { home: homeTeam, away: awayTeam })
   }
+
+  // Build slot labels for every KO match (shown even before teams are determined)
+  const slotLabels = new Map<number, { homeSlot: string; awaySlot: string }>()
+  for (const { serial, homeSlot, awaySlot } of R32_FIXED) {
+    slotLabels.set(serial, { homeSlot, awaySlot })
+  }
+  for (const [serialStr, homeSlot] of Object.entries(R32_BEST3)) {
+    const serial = Number(serialStr)
+    const assignedGroup = slotAssignment.get(serial)
+    slotLabels.set(serial, { homeSlot, awaySlot: assignedGroup ? `3${assignedGroup}` : 'Best 3rd' })
+  }
+  for (const serial of KO_SERIALS_BY_STAGE.r16) {
+    const [s1, s2] = BRACKET_TREE[serial]
+    slotLabels.set(serial, { homeSlot: `W(${serialToLabel(s1)})`, awaySlot: `W(${serialToLabel(s2)})` })
+  }
+  for (const serial of KO_SERIALS_BY_STAGE.qf) {
+    const [s1, s2] = BRACKET_TREE[serial]
+    slotLabels.set(serial, { homeSlot: `W(${serialToLabel(s1)})`, awaySlot: `W(${serialToLabel(s2)})` })
+  }
+  for (const serial of KO_SERIALS_BY_STAGE.sf) {
+    const [s1, s2] = BRACKET_TREE[serial]
+    slotLabels.set(serial, { homeSlot: `W(${serialToLabel(s1)})`, awaySlot: `W(${serialToLabel(s2)})` })
+  }
+  slotLabels.set(103, { homeSlot: 'L(M29)', awaySlot: 'L(M30)' })
+  slotLabels.set(104, { homeSlot: 'W(M29)', awaySlot: 'W(M30)' })
 
   // Step 5: build all KO team maps (needed for winner resolution)
   // We iterate rounds in order so each round can resolve from the previous
@@ -261,11 +289,14 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
 
   return allSerials.map(serial => {
     const teams = allKOTeams.get(serial) ?? { home: null, away: null }
+    const slots = slotLabels.get(serial) ?? { homeSlot: '?', awaySlot: '?' }
     return {
       serial,
       label: serialToLabel(serial),
       home: teams.home,
       away: teams.away,
+      homeSlot: slots.homeSlot,
+      awaySlot: slots.awaySlot,
       stage: KO_STAGE[serial],
     }
   })

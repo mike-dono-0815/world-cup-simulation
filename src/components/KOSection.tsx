@@ -41,14 +41,14 @@ export function KOSection({ koMatches, results, onUpdate }: Props) {
               }}>
                 {stageMatches.map(ko => {
                   if (!ko.home || !ko.away) {
-                    const homeLabel = ko.home ? ko.home.qualLabel : getExpectedQual('home')
-                    const awayLabel = ko.away ? ko.away.qualLabel : getExpectedQual('away')
                     return (
                       <TBDMatchCard
                         key={ko.serial}
                         label={ko.label}
-                        homeLabel={ko.home ? ko.home.qualLabel : homeLabel}
-                        awayLabel={ko.away ? ko.away.qualLabel : awayLabel}
+                        homeLabel={ko.homeSlot}
+                        awayLabel={ko.awaySlot}
+                        home={ko.home}
+                        away={ko.away}
                       />
                     )
                   }
@@ -73,9 +73,6 @@ export function KOSection({ koMatches, results, onUpdate }: Props) {
   )
 }
 
-function getExpectedQual(_side: 'home' | 'away'): string {
-  return 'W(?)'
-}
 
 function FinalCard({ match, result, onUpdate }: {
   match: KOMatch
