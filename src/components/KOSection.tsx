@@ -163,7 +163,7 @@ function FinalCard({ match, result, onUpdate }: {
       <div style={{ padding: '24px 28px' }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <div style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>
-            The WC Final 2026
+            The Final
           </div>
         </div>
 
