@@ -182,21 +182,12 @@ export default function App() {
 
           <div className="double-rule" style={{ paddingBottom: 8, marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-              <h1 className="font-didot bs-masthead-title" style={{
-                margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
-              }}>
-                {t.title}
-              </h1>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
-                  {t.btn_autofill}
-                </button>
-                {totalPlayed > 0 && (
-                  <button className="bs-btn danger" onClick={() => setShowResetConfirm(true)}>
-                    {t.btn_reset}
-                  </button>
-                )}
-                <LanguageSelector />
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                <h1 className="font-didot bs-masthead-title" style={{
+                  margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
+                }}>
+                  {t.title}
+                </h1>
                 <button
                   onClick={() => setShowHelp(true)}
                   style={{
@@ -207,6 +198,17 @@ export default function App() {
                   }}
                   aria-label="Help"
                 >?</button>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
+                  {t.btn_autofill}
+                </button>
+                {totalPlayed > 0 && (
+                  <button className="bs-btn danger" onClick={() => setShowResetConfirm(true)}>
+                    {t.btn_reset}
+                  </button>
+                )}
+                <LanguageSelector />
               </div>
             </div>
             <div className="bs-masthead-tagline" style={{

@@ -30,10 +30,10 @@ export function GroupTab({ groupId, matches, standings, advancingThirds, results
           <span className="smallcaps">{t.six_matches_tagline}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {matches.map(m => (
+          {matches.map((m, i) => (
             <MatchCard
               key={m.serial}
-              label={`#${m.serial}`}
+              label={`${groupId} ${String(i + 1).padStart(2, '0')}`}
               serial={m.serial}
               date={m.date}
               venue={m.venue}

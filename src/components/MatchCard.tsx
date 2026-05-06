@@ -87,7 +87,7 @@ export function MatchCard({
       }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, minWidth: 0 }}>
           <span className="bs-match-serial font-didot tnum" style={{ fontSize: 16, lineHeight: 1, color: 'var(--muted)' }}>
-            {serial != null ? `№ ${String(serial).padStart(2, '0')}` : label}
+            {label}
           </span>
           {date && (
             <span className="bs-match-date smallcaps" style={{
@@ -219,9 +219,9 @@ export function MatchCard({
             {t.the_odds}
           </span>
           <div style={{ flex: 1, display: 'flex', height: 4, border: '1px solid var(--ink)' }}>
-            <div style={{ width: `${pH}%`, background: '#365E3D' }} title={`Home ${pH}%`} />
-            <div style={{ width: `${pD}%`, background: '#8B7C5E' }} title={`Draw ${pD}%`} />
-            <div style={{ width: `${pA}%`, background: '#7A2A2A' }} title={`Away ${pA}%`} />
+            <div style={{ width: `${pH}%`, background: '#1A1813' }} title={`Home ${pH}%`} />
+            <div style={{ width: `${pD}%`, background: '#9a9384' }} title={`Draw ${pD}%`} />
+            <div style={{ width: `${pA}%`, background: '#A52A2A' }} title={`Away ${pA}%`} />
           </div>
           <span className="font-didot tnum" style={{ fontSize: 13, color: 'var(--muted)', whiteSpace: 'nowrap' }}>
             {oddsHome.toFixed(2)} · {oddsDraw.toFixed(2)} · {oddsAway.toFixed(2)}
