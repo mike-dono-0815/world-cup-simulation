@@ -9,6 +9,7 @@ import { useLanguage } from './lib/LanguageContext'
 import { GroupTab } from './components/GroupTab'
 import { KOSection } from './components/KOSection'
 import { AutoFillModal } from './components/AutoFillModal'
+import { HelpModal } from './components/HelpModal'
 import { LanguageSelector } from './components/LanguageSelector'
 import { Flag } from './components/Flag'
 
@@ -29,6 +30,7 @@ export default function App() {
   const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number]>('A')
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
+  const [showHelp, setShowHelp] = useState(false)
 
   const phaseLabel = useMemo(() => ({
     groups: t.phase_groups, r32: t.phase_r32, r16: t.phase_r16,
@@ -180,11 +182,23 @@ export default function App() {
 
           <div className="double-rule" style={{ paddingBottom: 8, marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-              <h1 className="font-didot bs-masthead-title" style={{
-                margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
-              }}>
-                {t.title}
-              </h1>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                <h1 className="font-didot bs-masthead-title" style={{
+                  margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
+                }}>
+                  {t.title}
+                </h1>
+                <button
+                  onClick={() => setShowHelp(true)}
+                  style={{
+                    background: 'none', border: '1.5px solid var(--muted)', borderRadius: '50%',
+                    width: 20, height: 20, cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                    color: 'var(--muted)', lineHeight: 1, padding: 0, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                  aria-label="Help"
+                >?</button>
+              </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
                   {t.btn_autofill}
@@ -305,6 +319,8 @@ export default function App() {
       }}>
         <div className="smallcaps">{t.footer}</div>
       </footer>
+
+      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
 
       {showAutoFill && (
         <AutoFillModal

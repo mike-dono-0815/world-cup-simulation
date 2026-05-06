@@ -71,6 +71,18 @@ export interface Translations {
   autofill_title: string
   autofill_desc: (n: number, phase: string) => string
   btn_fill: (n: number) => string
+  // Help modal
+  help_eyebrow: string
+  help_title: string
+  help_s1_heading: string
+  help_s1_body: string
+  help_s2_heading: string
+  help_s2_body: string
+  help_s3_heading: string
+  help_s3_body: string
+  help_s4_heading: string
+  help_s4_body: string
+  btn_close: string
   // Team names
   teamName: (name: string) => string
   // Strategies
@@ -212,6 +224,17 @@ const en: Translations = {
   autofill_title: 'Auto-fill',
   autofill_desc: (n, phase) => `Filling ${n} game${n !== 1 ? 's' : ''} in the ${phase} only.`,
   btn_fill: n => `Fill ${n} game${n !== 1 ? 's' : ''}`,
+  help_eyebrow: 'The Guide',
+  help_title: 'How to Use',
+  help_s1_heading: 'Simulate the Tournament',
+  help_s1_body: 'Enter home and away scores for any match — the bracket updates live. Work through all 104 matches (72 group stage + 32 knockout) or mix manual entries with Auto-fill.',
+  help_s2_heading: 'Auto-fill & Strategies',
+  help_s2_body: 'Auto-fill completes every unplayed game in the current phase using one of eight strategies — from following bookmaker odds to pure chaos. Your manual picks are never overwritten.',
+  help_s3_heading: 'Experiment Freely',
+  help_s3_body: 'Click × on any result to clear it. If the change affects which teams advance, all downstream knockout scores are reset automatically so results stay consistent.',
+  help_s4_heading: 'Group Tiebreakers',
+  help_s4_body: 'Teams level on points are separated by head-to-head record among the tied teams (pts → GD → GF), then overall goal difference, goals scored, and finally FIFA ranking.',
+  btn_close: 'Close',
   teamName: name => name,
   strategies: {
     follow_odds:     { label: 'Follow the Odds',    short: 'ODDS FAV',  description: 'Always back the bookmaker favourite' },
@@ -280,6 +303,17 @@ const de: Translations = {
   autofill_title: 'Auto-Füllen',
   autofill_desc: (n, phase) => `Füllt ${n} Spiel${n !== 1 ? 'e' : ''} in der ${phase}.`,
   btn_fill: n => `${n} Spiel${n !== 1 ? 'e' : ''} füllen`,
+  help_eyebrow: 'Der Leitfaden',
+  help_title: 'So funktioniert\'s',
+  help_s1_heading: 'Das Turnier simulieren',
+  help_s1_body: 'Heim- und Auswärtstore für beliebige Spiele eingeben — das Tableau aktualisiert sich live. Alle 104 Spiele manuell eintragen (72 Gruppenphase + 32 K.O.) oder Auto-Füllen kombinieren.',
+  help_s2_heading: 'Auto-Füllen & Strategien',
+  help_s2_body: 'Auto-Füllen füllt alle offenen Spiele der aktuellen Phase mit einer von acht Strategien — von Buchmacherquoten bis Totalchaos. Bereits eingetragene Ergebnisse werden nie überschrieben.',
+  help_s3_heading: 'Frei experimentieren',
+  help_s3_body: 'Auf × einer Ergebniskarte klicken, um es zu löschen. Ändert sich dadurch, welche Teams aufsteigen, werden alle nachgelagerten K.O.-Ergebnisse automatisch zurückgesetzt.',
+  help_s4_heading: 'Gruppenentscheidungen',
+  help_s4_body: 'Bei Punktgleichheit: direkter Vergleich der betroffenen Teams (Pkt → TD → T+), danach Gesamt-Tordifferenz, Gesamttore, FIFA-Rang.',
+  btn_close: 'Schließen',
   teamName: name => DE_TEAM_NAMES[name] ?? name,
   strategies: {
     follow_odds:     { label: 'Den Quoten folgen',        short: 'FAVORIT',  description: 'Immer den Buchmacherfavoriten unterstützen' },
@@ -330,7 +364,7 @@ const es: Translations = {
   col_gd: 'DG',
   col_pts: 'Pts',
   col_status: 'Estado',
-  tiebreakers: 'Desempate: Pts · H2H · DG · GF · Ranking FIFA',
+  tiebreakers: 'Desempate: Pts · H2H · DG · GF · FIFA Rank',
   updated_continuously: 'Actualizado continuamente',
   status_advance: '✓ Avanza',
   status_third: '~ Tercero',
@@ -348,6 +382,17 @@ const es: Translations = {
   autofill_title: 'Auto-rellenar',
   autofill_desc: (n, phase) => `Rellenando ${n} partido${n !== 1 ? 's' : ''} de ${phase}.`,
   btn_fill: n => `Rellenar ${n} partido${n !== 1 ? 's' : ''}`,
+  help_eyebrow: 'La Guía',
+  help_title: 'Cómo usar',
+  help_s1_heading: 'Simular el torneo',
+  help_s1_body: 'Introduce marcadores local y visitante para cualquier partido — el cuadro se actualiza en tiempo real. Completa los 104 partidos (72 de grupos + 32 eliminatorias) o combina entradas manuales con Auto-rellenar.',
+  help_s2_heading: 'Auto-rellenar y Estrategias',
+  help_s2_body: 'Auto-rellenar completa todos los partidos pendientes de la fase actual con una de ocho estrategias — desde las cuotas hasta el caos total. Los resultados ya introducidos nunca se modifican.',
+  help_s3_heading: 'Experimenta libremente',
+  help_s3_body: 'Haz clic en × de cualquier resultado para borrarlo. Si el cambio afecta qué equipos avanzan, todos los resultados eliminatorios posteriores se reinician automáticamente.',
+  help_s4_heading: 'Desempate en grupos',
+  help_s4_body: 'En igualdad de puntos: resultado directo entre los equipos empatados (pts → DG → GF), luego diferencia de goles global, goles anotados y ranking FIFA.',
+  btn_close: 'Cerrar',
   teamName: name => ES_TEAM_NAMES[name] ?? name,
   strategies: {
     follow_odds:     { label: 'Seguir las Cuotas',        short: 'FAVORITO',  description: 'Siempre apostar por el favorito de las apuestas' },
