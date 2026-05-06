@@ -39,7 +39,7 @@ function formatDate(iso?: string): string {
 }
 
 export function MatchCard({
-  label, serial, date, venue, oddsHome, oddsDraw, oddsAway,
+  label, date, venue, oddsHome, oddsDraw, oddsAway,
   home, away, result, onUpdate, onClear, isKO, disabled,
 }: Props) {
   const { t } = useLanguage()
