@@ -47,20 +47,19 @@ export function HelpModal({ onClose }: Props) {
           </div>
         </header>
 
-        <div style={{ padding: '14px 22px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ padding: '6px 22px 4px', display: 'flex', flexDirection: 'column' }}>
           {sections.map((s, i) => (
             <div
               key={i}
               style={{
-                padding: '12px 14px',
-                background: 'rgba(26,24,19,0.04)',
-                borderLeft: '3px solid var(--ink)',
+                padding: '14px 0',
+                borderBottom: i < sections.length - 1 ? '1px solid var(--hairline)' : 'none',
               }}
             >
-              <div className="font-didot" style={{ fontSize: 17, lineHeight: 1.1, marginBottom: 5 }}>
+              <div className="font-didot" style={{ fontSize: 18, lineHeight: 1.1, marginBottom: 6 }}>
                 {s.heading}
               </div>
-              <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.55 }}>
+              <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.55, textAlign: 'justify' }}>
                 {s.body}
               </div>
             </div>
