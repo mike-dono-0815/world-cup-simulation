@@ -7,6 +7,7 @@ import { buildAllKOMatches, getTournamentWinner, KO_SERIALS_BY_STAGE } from './l
 import { autoFillGroupMatch, autoFillKOMatch } from './lib/autofill'
 import { useLanguage } from './lib/LanguageContext'
 import { GroupTab } from './components/GroupTab'
+import { BestThirdTab } from './components/BestThirdTab'
 import { KOSection } from './components/KOSection'
 import { AutoFillModal } from './components/AutoFillModal'
 import { HelpModal } from './components/HelpModal'
@@ -27,7 +28,7 @@ export default function App() {
   const { t } = useLanguage()
   const [results, setResults] = useState<Record<number, MatchResult>>(() => loadResults())
   const [activePhase, setActivePhase] = useState<Phase>('groups')
-  const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number]>('A')
+  const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number] | 'best3rd'>('A')
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
@@ -265,6 +266,15 @@ export default function App() {
                 )}
               </span>
             ))}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: 'var(--faint)', fontSize: 10 }}>·</span>
+              <button
+                className={`bs-group${activeGroup === 'best3rd' ? ' active' : ''}`}
+                onClick={() => setActiveGroup('best3rd')}
+              >
+                <span>{t.best3rd_tab}</span>
+              </button>
+            </span>
           </div>
           </div>
           </div>
@@ -291,6 +301,13 @@ export default function App() {
         flex: 1, padding: '24px 32px 48px', maxWidth: 1240, width: '100%', margin: '0 auto',
       }}>
         {activePhase === 'groups' ? (
+          activeGroup === 'best3rd' ? (
+            <BestThirdTab
+              allGroupStandings={allGroupStandings}
+              advancingThirds={advancingThirds}
+              groupCounts={groupCounts}
+            />
+          ) : (
           <GroupTab
             groupId={activeGroup}
             matches={GROUP_MATCHES.filter(m => m.group === activeGroup)}
@@ -300,6 +317,7 @@ export default function App() {
             onUpdate={updateResult}
             onClear={clearResult}
           />
+          )
         ) : (
           <KOSection
             koMatches={koMatches}

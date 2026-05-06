@@ -71,6 +71,11 @@ export interface Translations {
   autofill_title: string
   autofill_desc: (n: number, phase: string) => string
   btn_fill: (n: number) => string
+  // Best 3rd tab
+  best3rd_tab: string
+  best3rd_title: string
+  best3rd_groups_done: (n: number) => string
+  col_group: string
   // Help modal
   help_eyebrow: string
   help_title: string
@@ -226,6 +231,10 @@ const en: Translations = {
   autofill_title: 'Auto-fill',
   autofill_desc: (n, phase) => `Filling ${n} game${n !== 1 ? 's' : ''} in the ${phase} only.`,
   btn_fill: n => `Fill ${n} game${n !== 1 ? 's' : ''}`,
+  best3rd_tab: 'Best 3rd',
+  best3rd_title: 'Best Third-Place Teams',
+  best3rd_groups_done: n => `${n}/12 groups complete`,
+  col_group: 'Grp',
   help_eyebrow: 'The Guide',
   help_title: 'How to Use',
   help_s1_heading: 'Simulate the Tournament',
@@ -307,6 +316,10 @@ const de: Translations = {
   autofill_title: 'Auto-Füllen',
   autofill_desc: (n, phase) => `Füllt ${n} Spiel${n !== 1 ? 'e' : ''} in der ${phase}.`,
   btn_fill: n => `${n} Spiel${n !== 1 ? 'e' : ''} füllen`,
+  best3rd_tab: 'Beste Dritte',
+  best3rd_title: 'Beste Drittplatzierte',
+  best3rd_groups_done: n => `${n}/12 Gruppen abgeschlossen`,
+  col_group: 'Gr.',
   help_eyebrow: 'Der Leitfaden',
   help_title: 'So funktioniert\'s',
   help_s1_heading: 'Das Turnier simulieren',
@@ -388,6 +401,10 @@ const es: Translations = {
   autofill_title: 'Auto-rellenar',
   autofill_desc: (n, phase) => `Rellenando ${n} partido${n !== 1 ? 's' : ''} de ${phase}.`,
   btn_fill: n => `Rellenar ${n} partido${n !== 1 ? 's' : ''}`,
+  best3rd_tab: 'Mejor 3°',
+  best3rd_title: 'Mejores Terceros',
+  best3rd_groups_done: n => `${n}/12 grupos completos`,
+  col_group: 'Gr.',
   help_eyebrow: 'La Guía',
   help_title: 'Cómo usar',
   help_s1_heading: 'Simular el torneo',
