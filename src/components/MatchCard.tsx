@@ -133,7 +133,7 @@ export function MatchCard({
           <Flag code={home.flagCode} size={26} />
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {home.name}
+              {t.teamName(home.name)}
             </div>
             {home.qualLabel && (
               <div className="smallcaps" style={{ fontSize: 9, marginTop: 2, color: 'var(--faint)' }}>
@@ -154,7 +154,7 @@ export function MatchCard({
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end', minWidth: 0 }}>
           <div style={{ minWidth: 0, textAlign: 'right' }}>
             <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {away.name}
+              {t.teamName(away.name)}
             </div>
             {away.qualLabel && (
               <div className="smallcaps" style={{ fontSize: 9, marginTop: 2, color: 'var(--faint)' }}>
@@ -197,13 +197,13 @@ export function MatchCard({
             className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`}
             onClick={() => setPenalty('home')}
           >
-            {home.name}
+            {t.teamName(home.name)}
           </button>
           <button
             className={`bs-pen${penWinner === 'away' ? ' selected' : ''}`}
             onClick={() => setPenalty('away')}
           >
-            {away.name}
+            {t.teamName(away.name)}
           </button>
         </div>
       )}

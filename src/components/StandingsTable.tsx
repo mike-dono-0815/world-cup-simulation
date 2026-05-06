@@ -66,7 +66,7 @@ export function StandingsTable({ standings, advancingThirds, groupId }: Props) {
                         fontSize: 18, lineHeight: 1, color: 'var(--muted)', minWidth: 14,
                       }}>{i + 1}.</span>
                       <Flag code={s.flagCode} size={22} />
-                      <span style={{ fontSize: 14, fontWeight: 600 }}>{s.team}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600 }}>{t.teamName(s.team)}</span>
                     </div>
                   </td>
                   <td>{s.played}</td>

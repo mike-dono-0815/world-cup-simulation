@@ -175,7 +175,7 @@ function FinalCard({ match, result, onUpdate }: {
           <div style={{ flex: 1, textAlign: 'right' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{home.name}</div>
+                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{t.teamName(home.name)}</div>
                 <div className="smallcaps" style={{ fontSize: 9, marginTop: 2 }}>{home.qualLabel}</div>
               </div>
               <Flag code={home.flagCode} size={44} />
@@ -194,7 +194,7 @@ function FinalCard({ match, result, onUpdate }: {
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
               <Flag code={away.flagCode} size={44} />
               <div>
-                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{away.name}</div>
+                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.1 }}>{t.teamName(away.name)}</div>
                 <div className="smallcaps" style={{ fontSize: 9, marginTop: 2 }}>{away.qualLabel}</div>
               </div>
             </div>
@@ -208,10 +208,10 @@ function FinalCard({ match, result, onUpdate }: {
           }}>
             <span className="smallcaps">{t.penalties_won_by}</span>
             <button className={`bs-pen${penWinner === 'home' ? ' selected' : ''}`} onClick={() => setPenalty('home')}>
-              {home.name}
+              {t.teamName(home.name)}
             </button>
             <button className={`bs-pen${penWinner === 'away' ? ' selected' : ''}`} onClick={() => setPenalty('away')}>
-              {away.name}
+              {t.teamName(away.name)}
             </button>
           </div>
         )}

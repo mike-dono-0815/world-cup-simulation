@@ -266,7 +266,7 @@ export default function App() {
             </span>
             <Flag code={champion.flagCode} size={32} />
             <span className="font-didot" style={{ fontSize: 30, lineHeight: 1 }}>
-              {champion.name}
+              {t.teamName(champion.name)}
             </span>
           </div>
         </div>

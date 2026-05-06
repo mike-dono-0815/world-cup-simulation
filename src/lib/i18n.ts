@@ -71,8 +71,90 @@ export interface Translations {
   autofill_title: string
   autofill_desc: (n: number, phase: string) => string
   btn_fill: (n: number) => string
+  // Team names
+  teamName: (name: string) => string
   // Strategies
   strategies: Record<string, StrategyLabel>
+}
+
+const DE_TEAM_NAMES: Record<string, string> = {
+  'Mexico':               'Mexiko',
+  'South Korea':          'Südkorea',
+  'South Africa':         'Südafrika',
+  'Czechia':              'Tschechien',
+  'Canada':               'Kanada',
+  'Bosnia & Herzegovina': 'Bosnien-Herzegowina',
+  'Qatar':                'Katar',
+  'Switzerland':          'Schweiz',
+  'Brazil':               'Brasilien',
+  'Morocco':              'Marokko',
+  'Scotland':             'Schottland',
+  'United States':        'USA',
+  'Australia':            'Australien',
+  'Türkiye':              'Türkei',
+  'Germany':              'Deutschland',
+  "Côte d'Ivoire":        'Elfenbeinküste',
+  'Netherlands':          'Niederlande',
+  'Sweden':               'Schweden',
+  'Tunisia':              'Tunesien',
+  'Belgium':              'Belgien',
+  'Egypt':                'Ägypten',
+  'New Zealand':          'Neuseeland',
+  'Spain':                'Spanien',
+  'Saudi Arabia':         'Saudi-Arabien',
+  'Cape Verde':           'Kap Verde',
+  'France':               'Frankreich',
+  'Iraq':                 'Irak',
+  'Norway':               'Norwegen',
+  'Argentina':            'Argentinien',
+  'Algeria':              'Algerien',
+  'Austria':              'Österreich',
+  'Jordan':               'Jordanien',
+  'Colombia':             'Kolumbien',
+  'Uzbekistan':           'Usbekistan',
+  'DR Congo':             'DR Kongo',
+  'Croatia':              'Kroatien',
+}
+
+const ES_TEAM_NAMES: Record<string, string> = {
+  'Mexico':               'México',
+  'South Korea':          'Corea del Sur',
+  'South Africa':         'Sudáfrica',
+  'Czechia':              'Chequia',
+  'Canada':               'Canadá',
+  'Bosnia & Herzegovina': 'Bosnia y Herzegovina',
+  'Qatar':                'Catar',
+  'Switzerland':          'Suiza',
+  'Brazil':               'Brasil',
+  'Morocco':              'Marruecos',
+  'Haiti':                'Haití',
+  'Scotland':             'Escocia',
+  'United States':        'Estados Unidos',
+  'Türkiye':              'Turquía',
+  'Germany':              'Alemania',
+  "Côte d'Ivoire":        'Costa de Marfil',
+  'Curaçao':              'Curazao',
+  'Netherlands':          'Países Bajos',
+  'Japan':                'Japón',
+  'Sweden':               'Suecia',
+  'Tunisia':              'Túnez',
+  'Belgium':              'Bélgica',
+  'Egypt':                'Egipto',
+  'Iran':                 'Irán',
+  'New Zealand':          'Nueva Zelanda',
+  'Spain':                'España',
+  'Saudi Arabia':         'Arabia Saudita',
+  'Cape Verde':           'Cabo Verde',
+  'France':               'Francia',
+  'Iraq':                 'Irak',
+  'Norway':               'Noruega',
+  'Algeria':              'Argelia',
+  'Jordan':               'Jordania',
+  'Uzbekistan':           'Uzbekistán',
+  'DR Congo':             'RD Congo',
+  'England':              'Inglaterra',
+  'Croatia':              'Croacia',
+  'Panama':               'Panamá',
 }
 
 const en: Translations = {
@@ -130,6 +212,7 @@ const en: Translations = {
   autofill_title: 'Auto-fill',
   autofill_desc: (n, phase) => `Filling ${n} game${n !== 1 ? 's' : ''} in the ${phase} only.`,
   btn_fill: n => `Fill ${n} game${n !== 1 ? 's' : ''}`,
+  teamName: name => name,
   strategies: {
     follow_odds:     { label: 'Follow the Odds',    short: 'ODDS FAV',  description: 'Always back the bookmaker favourite' },
     fifa_ranking:    { label: 'FIFA Ranking',        short: 'FIFA RNK',  description: 'Higher-ranked team wins; no draws' },
@@ -197,6 +280,7 @@ const de: Translations = {
   autofill_title: 'Auto-Füllen',
   autofill_desc: (n, phase) => `Füllt ${n} Spiel${n !== 1 ? 'e' : ''} in der ${phase}.`,
   btn_fill: n => `${n} Spiel${n !== 1 ? 'e' : ''} füllen`,
+  teamName: name => DE_TEAM_NAMES[name] ?? name,
   strategies: {
     follow_odds:     { label: 'Den Quoten folgen',        short: 'FAVORIT',  description: 'Immer den Buchmacherfavoriten unterstützen' },
     fifa_ranking:    { label: 'FIFA-Rangliste',            short: 'FIFA RNK', description: 'Das höher eingestufte Team gewinnt; keine Unentschieden' },
@@ -264,6 +348,7 @@ const es: Translations = {
   autofill_title: 'Auto-rellenar',
   autofill_desc: (n, phase) => `Rellenando ${n} partido${n !== 1 ? 's' : ''} de ${phase}.`,
   btn_fill: n => `Rellenar ${n} partido${n !== 1 ? 's' : ''}`,
+  teamName: name => ES_TEAM_NAMES[name] ?? name,
   strategies: {
     follow_odds:     { label: 'Seguir las Cuotas',        short: 'FAVORITO',  description: 'Siempre apostar por el favorito de las apuestas' },
     fifa_ranking:    { label: 'Ranking FIFA',              short: 'FIFA RNK',  description: 'Gana el equipo mejor clasificado; sin empates' },
