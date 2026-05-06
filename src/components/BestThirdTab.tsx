@@ -20,8 +20,8 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
       }} className="double-rule">
         <div>
           <div className="smallcaps" style={{ marginBottom: 2 }}>{t.the_table}</div>
-          <div className="font-didot" style={{ fontSize: 24, lineHeight: 1.1, letterSpacing: '-0.005em' }}>
-            {t.best3rd_title}<br className="mob-br" />{t.best3rd_title_2}
+          <div className="font-didot" style={{ fontSize: 24, lineHeight: 1.1, letterSpacing: '-0.005em', whiteSpace: 'nowrap' }}>
+            {t.best3rd_title}{' '}<br className="mob-br" />{t.best3rd_title_2}
           </div>
         </div>
         <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
