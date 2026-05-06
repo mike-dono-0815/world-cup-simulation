@@ -306,7 +306,6 @@ export default function App() {
             <BestThirdTab
               allGroupStandings={allGroupStandings}
               advancingThirds={advancingThirds}
-              groupCounts={groupCounts}
             />
           ) : (
           <GroupTab

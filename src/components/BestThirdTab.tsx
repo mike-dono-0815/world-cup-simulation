@@ -6,13 +6,11 @@ import { rankThirdPlaceTeams } from '../lib/standings'
 interface Props {
   allGroupStandings: Map<string, GroupStanding[]>
   advancingThirds: Set<string>
-  groupCounts: Record<string, number>
 }
 
-export function BestThirdTab({ allGroupStandings, advancingThirds, groupCounts }: Props) {
+export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
   const { t } = useLanguage()
   const ranked = rankThirdPlaceTeams(allGroupStandings)
-  const groupsDone = Object.values(groupCounts).filter(c => c === 6).length
 
   return (
     <section className="bs-card">
@@ -24,9 +22,6 @@ export function BestThirdTab({ allGroupStandings, advancingThirds, groupCounts }
           <div className="smallcaps" style={{ marginBottom: 2 }}>{t.the_table}</div>
           <div className="font-didot" style={{ fontSize: 24, lineHeight: 1.1, letterSpacing: '-0.005em' }}>
             {t.best3rd_title}<br className="mob-br" />{t.best3rd_title_2}
-            {groupsDone > 0 && (
-              <span style={{ fontSize: 22, whiteSpace: 'nowrap' }}> ({groupsDone}/12)</span>
-            )}
           </div>
         </div>
         <div className="smallcaps" style={{ textAlign: 'right', lineHeight: 1.5 }}>
