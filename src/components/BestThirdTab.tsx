@@ -33,7 +33,7 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
         <table className="bs-table">
           <thead>
             <tr>
-              <th className="first">{t.col_group}</th>
+              <th className="first" style={{ width: 32 }}>{t.col_group}</th>
               <th style={{ textAlign: 'left', paddingLeft: 8 }}>{t.col_club}</th>
               <th>{t.col_pld}</th>
               <th>{t.col_w}</th>
@@ -52,7 +52,7 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
               const accent = isAdvancing ? 'var(--third)' : 'transparent'
               return (
                 <tr key={s.team} className={i % 2 === 1 ? 'alt' : ''}>
-                  <td style={{ padding: '10px 0 10px 24px', position: 'relative' }}>
+                  <td style={{ padding: '10px 0 10px 14px', position: 'relative', width: 32 }}>
                     <div style={{
                       position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, background: accent,
                     }} />
