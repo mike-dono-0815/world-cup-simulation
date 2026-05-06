@@ -82,6 +82,8 @@ export interface Translations {
   help_s3_body: string
   help_s4_heading: string
   help_s4_body: string
+  help_s5_heading: string
+  help_s5_body: string
   btn_close: string
   // Team names
   teamName: (name: string) => string
@@ -232,8 +234,10 @@ const en: Translations = {
   help_s2_body: 'Auto-fill completes every unplayed game in the current phase using one of eight strategies — from following bookmaker odds to pure chaos. Your manual picks are never overwritten.',
   help_s3_heading: 'Experiment Freely',
   help_s3_body: 'Click × on any result to clear it. If the change affects which teams advance, all downstream knockout scores are reset automatically so results stay consistent.',
-  help_s4_heading: 'Group Tiebreakers',
-  help_s4_body: 'Teams level on points are separated by head-to-head record among the tied teams (pts → GD → GF), then overall goal difference, goals scored, and finally FIFA ranking.',
+  help_s4_heading: 'Tournament Structure',
+  help_s4_body: 'The top two from each of the 12 groups advance automatically (24 teams). The 8 best third-place finishers across all groups also qualify — ranked by points, goal difference, goals scored, and FIFA ranking. Their slots in the Round of 32 are fixed by a 495-entry lookup table that depends on exactly which groups produced advancing thirds. From there it is straight knockout: Round of 32 → Round of 16 → Quarter-Finals → Semi-Finals → Third-Place Play-off and The Final.',
+  help_s5_heading: 'Group Tiebreakers',
+  help_s5_body: 'Teams level on points are separated by head-to-head record among the tied teams (pts → GD → GF), then overall goal difference, goals scored, and finally FIFA ranking.',
   btn_close: 'Close',
   teamName: name => name,
   strategies: {
@@ -311,8 +315,10 @@ const de: Translations = {
   help_s2_body: 'Auto-Füllen füllt alle offenen Spiele der aktuellen Phase mit einer von acht Strategien — von Buchmacherquoten bis Totalchaos. Bereits eingetragene Ergebnisse werden nie überschrieben.',
   help_s3_heading: 'Frei experimentieren',
   help_s3_body: 'Auf × einer Ergebniskarte klicken, um es zu löschen. Ändert sich dadurch, welche Teams aufsteigen, werden alle nachgelagerten K.O.-Ergebnisse automatisch zurückgesetzt.',
-  help_s4_heading: 'Gruppenentscheidungen',
-  help_s4_body: 'Bei Punktgleichheit: direkter Vergleich der betroffenen Teams (Pkt → TD → T+), danach Gesamt-Tordifferenz, Gesamttore, FIFA-Rang.',
+  help_s4_heading: 'Turniermechanismus',
+  help_s4_body: 'Die ersten zwei Teams jeder der 12 Gruppen steigen direkt auf (24 Teams). Die 8 besten Drittplatzierten aller Gruppen qualifizieren sich ebenfalls — nach Punkten, Tordifferenz, Toren und FIFA-Rang. Ihre Platzierung in der Runde der 32 ergibt sich aus einer 495-Einträge-Tabelle abhängig davon, aus welchen Gruppen die Drittplatzierten kommen. Danach folgt K.O.: Runde der 32 → Achtelfinale → Viertelfinale → Halbfinale → Spiel um Platz 3 und Finale.',
+  help_s5_heading: 'Gruppenentscheidungen',
+  help_s5_body: 'Bei Punktgleichheit: direkter Vergleich der betroffenen Teams (Pkt → TD → T+), danach Gesamt-Tordifferenz, Gesamttore, FIFA-Rang.',
   btn_close: 'Schließen',
   teamName: name => DE_TEAM_NAMES[name] ?? name,
   strategies: {
@@ -390,8 +396,10 @@ const es: Translations = {
   help_s2_body: 'Auto-rellenar completa todos los partidos pendientes de la fase actual con una de ocho estrategias — desde las cuotas hasta el caos total. Los resultados ya introducidos nunca se modifican.',
   help_s3_heading: 'Experimenta libremente',
   help_s3_body: 'Haz clic en × de cualquier resultado para borrarlo. Si el cambio afecta qué equipos avanzan, todos los resultados eliminatorios posteriores se reinician automáticamente.',
-  help_s4_heading: 'Desempate en grupos',
-  help_s4_body: 'En igualdad de puntos: resultado directo entre los equipos empatados (pts → DG → GF), luego diferencia de goles global, goles anotados y ranking FIFA.',
+  help_s4_heading: 'Estructura del torneo',
+  help_s4_body: 'Los dos primeros de cada uno de los 12 grupos avanzan automáticamente (24 equipos). Los 8 mejores terceros de todos los grupos también se clasifican — por puntos, diferencia de goles, goles anotados y ranking FIFA. Su ubicación en los treintaidosavos de final se determina mediante una tabla de 495 entradas según qué grupos generaron terceros clasificados. A partir de ahí es eliminación directa: Ronda de 32 → Octavos → Cuartos → Semifinales → Tercer lugar y La Final.',
+  help_s5_heading: 'Desempate en grupos',
+  help_s5_body: 'En igualdad de puntos: resultado directo entre los equipos empatados (pts → DG → GF), luego diferencia de goles global, goles anotados y ranking FIFA.',
   btn_close: 'Cerrar',
   teamName: name => ES_TEAM_NAMES[name] ?? name,
   strategies: {

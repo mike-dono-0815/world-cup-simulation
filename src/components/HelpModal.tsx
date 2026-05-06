@@ -12,6 +12,7 @@ export function HelpModal({ onClose }: Props) {
     { heading: t.help_s2_heading, body: t.help_s2_body },
     { heading: t.help_s3_heading, body: t.help_s3_body },
     { heading: t.help_s4_heading, body: t.help_s4_body },
+    { heading: t.help_s5_heading, body: t.help_s5_body },
   ]
 
   return (

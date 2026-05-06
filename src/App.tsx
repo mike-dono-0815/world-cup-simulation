@@ -182,23 +182,11 @@ export default function App() {
 
           <div className="double-rule" style={{ paddingBottom: 8, marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-                <h1 className="font-didot bs-masthead-title" style={{
-                  margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
-                }}>
-                  {t.title}
-                </h1>
-                <button
-                  onClick={() => setShowHelp(true)}
-                  style={{
-                    background: 'none', border: '1.5px solid var(--muted)', borderRadius: '50%',
-                    width: 20, height: 20, cursor: 'pointer', fontSize: 11, fontWeight: 700,
-                    color: 'var(--muted)', lineHeight: 1, padding: 0, flexShrink: 0,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}
-                  aria-label="Help"
-                >?</button>
-              </div>
+              <h1 className="font-didot bs-masthead-title" style={{
+                margin: 0, fontSize: 56, lineHeight: 0.95, letterSpacing: '-0.015em',
+              }}>
+                {t.title}
+              </h1>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
                   {t.btn_autofill}
@@ -209,6 +197,16 @@ export default function App() {
                   </button>
                 )}
                 <LanguageSelector />
+                <button
+                  onClick={() => setShowHelp(true)}
+                  style={{
+                    background: 'none', border: '1.5px solid var(--muted)', borderRadius: '50%',
+                    width: 20, height: 20, cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                    color: 'var(--muted)', lineHeight: 1, padding: 0, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                  aria-label="Help"
+                >?</button>
               </div>
             </div>
             <div className="bs-masthead-tagline" style={{
