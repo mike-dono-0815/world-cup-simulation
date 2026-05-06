@@ -40,6 +40,12 @@ const R32_BEST3: Record<number, string> = {
   81: '1D', 82: '1G', 85: '1B', 87: '1K',
 }
 
+// Eligible third-place groups per Best-3rd slot (shown before assignment is resolved)
+const R32_BEST3_GROUPS: Record<number, string> = {
+  74: 'A/B/C/D/F', 77: 'C/D/F/G/H', 79: 'C/E/F/H/I', 80: 'E/H/I/J/K',
+  81: 'B/E/F/I/J', 82: 'A/E/H/I/J', 85: 'E/F/G/I/J', 87: 'D/E/I/J/L',
+}
+
 // Full KO bracket tree: output serial → [input1 serial, input2 serial]
 export const BRACKET_TREE: Record<number, [number, number]> = {
   89:  [74,  77],  90:  [73,  75],  91:  [76,  78],  92:  [79,  80],
@@ -202,7 +208,7 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   for (const [serialStr, homeSlot] of Object.entries(R32_BEST3)) {
     const serial = Number(serialStr)
     const assignedGroup = slotAssignment.get(serial)
-    slotLabels.set(serial, { homeSlot, awaySlot: assignedGroup ? `3${assignedGroup}` : 'Best 3rd' })
+    slotLabels.set(serial, { homeSlot, awaySlot: assignedGroup ? `3${assignedGroup}` : `${R32_BEST3_GROUPS[serial]} 3rd` })
   }
   for (const serial of KO_SERIALS_BY_STAGE.r16) {
     const [s1, s2] = BRACKET_TREE[serial]
