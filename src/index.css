@@ -111,6 +111,8 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.mob-br { display: none; }
+
 /* Group sub-nav button */
 .bs-group {
   background: transparent;
@@ -301,6 +303,7 @@ body {
     scrollbar-width: none;
   }
   .bs-group-rail::-webkit-scrollbar { display: none; }
+  .mob-br { display: initial; }
 
   /* Match card header: keep serial + status on one row, hide venue */
   .bs-match-header { flex-wrap: nowrap !important; }

@@ -74,6 +74,7 @@ export interface Translations {
   // Best 3rd tab
   best3rd_tab: string
   best3rd_title: string
+  best3rd_title_2: string
   best3rd_groups_done: (n: number) => string
   col_group: string
   // Help modal
@@ -232,7 +233,8 @@ const en: Translations = {
   autofill_desc: (n, phase) => `Filling ${n} game${n !== 1 ? 's' : ''} in the ${phase} only.`,
   btn_fill: n => `Fill ${n} game${n !== 1 ? 's' : ''}`,
   best3rd_tab: 'Best 3rd',
-  best3rd_title: 'Best Third-Place Teams',
+  best3rd_title: 'Best Third-Place',
+  best3rd_title_2: 'Teams',
   best3rd_groups_done: n => `${n}/12 groups complete`,
   col_group: 'Grp',
   help_eyebrow: 'The Guide',
@@ -317,15 +319,16 @@ const de: Translations = {
   autofill_desc: (n, phase) => `Füllt ${n} Spiel${n !== 1 ? 'e' : ''} in der ${phase}.`,
   btn_fill: n => `${n} Spiel${n !== 1 ? 'e' : ''} füllen`,
   best3rd_tab: 'Beste Dritte',
-  best3rd_title: 'Beste Drittplatzierte',
+  best3rd_title: 'Beste',
+  best3rd_title_2: 'Drittplatzierte',
   best3rd_groups_done: n => `${n}/12 Gruppen abgeschlossen`,
   col_group: 'Gr.',
   help_eyebrow: 'Der Leitfaden',
   help_title: 'So funktioniert\'s',
   help_s1_heading: 'Das Turnier simulieren',
-  help_s1_body: 'Heim- und Auswärtstore für beliebige Spiele eingeben — das Tableau aktualisiert sich live. Alle 104 Spiele manuell eintragen (72 Gruppenphase + 32 K.O.) oder mit Auto-Füllen kombinieren.',
+  help_s1_body: 'Ergebnisse für beliebige Spiele eingeben — das Tableau aktualisiert sich live. Alle 104 Spiele manuell eintragen (72 Gruppenphase + 32 K.O.) oder mit Auto-Füllen kombinieren.',
   help_s2_heading: 'Auto-Füllen & Strategien',
-  help_s2_body: 'Auto-Füllen füllt alle offenen Spiele der aktuellen Phase mit einer von acht Strategien — von Buchmacherquoten bis Totalchaos. Bereits eingetragene Ergebnisse werden nie überschrieben.',
+  help_s2_body: 'Auto-Füllen füllt alle offenen Spiele der aktuellen Phase mit einer von acht Strategien — von Buchmacherquoten bis totales Chaos. Bereits eingetragene Ergebnisse werden nie überschrieben.',
   help_s3_heading: 'Frei experimentieren',
   help_s3_body: 'Auf × einer Ergebniskarte klicken, um das Ergebnis zu löschen. Ändert sich dadurch, welche Teams aufsteigen, werden alle späteren K.O.-Ergebnisse automatisch zurückgesetzt.',
   help_s4_heading: 'Turniermechanismus',
@@ -402,7 +405,8 @@ const es: Translations = {
   autofill_desc: (n, phase) => `Rellenando ${n} partido${n !== 1 ? 's' : ''} de ${phase}.`,
   btn_fill: n => `Rellenar ${n} partido${n !== 1 ? 's' : ''}`,
   best3rd_tab: 'Mejor 3°',
-  best3rd_title: 'Mejores Terceros',
+  best3rd_title: 'Mejores',
+  best3rd_title_2: 'Terceros',
   best3rd_groups_done: n => `${n}/12 grupos completos`,
   col_group: 'Gr.',
   help_eyebrow: 'La Guía',

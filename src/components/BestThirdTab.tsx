@@ -22,10 +22,10 @@ export function BestThirdTab({ allGroupStandings, advancingThirds, groupCounts }
       }} className="double-rule">
         <div>
           <div className="smallcaps" style={{ marginBottom: 2 }}>{t.the_table}</div>
-          <div className="font-didot" style={{ fontSize: 24, lineHeight: 1, letterSpacing: '-0.005em', whiteSpace: 'nowrap' }}>
-            {t.best3rd_title}
+          <div className="font-didot" style={{ fontSize: 24, lineHeight: 1.1, letterSpacing: '-0.005em' }}>
+            {t.best3rd_title}<br className="mob-br" />{t.best3rd_title_2}
             {groupsDone > 0 && (
-              <span style={{ fontSize: 22 }}> ({groupsDone}/12)</span>
+              <span style={{ fontSize: 22, whiteSpace: 'nowrap' }}> ({groupsDone}/12)</span>
             )}
           </div>
         </div>
@@ -66,7 +66,7 @@ export function BestThirdTab({ allGroupStandings, advancingThirds, groupCounts }
                   <td style={{ textAlign: 'left', padding: '10px 8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span className="font-didot tnum" style={{
-                        fontSize: 16, lineHeight: 1, color: 'var(--muted)', minWidth: 14,
+                        fontSize: 16, lineHeight: 1, color: 'var(--muted)', minWidth: 28, textAlign: 'right',
                       }}>{i + 1}.</span>
                       <Flag code={s.flagCode} size={20} />
                       <span style={{ fontSize: 14, fontWeight: 600 }}>{t.teamName(s.team)}</span>
