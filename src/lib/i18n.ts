@@ -236,7 +236,7 @@ const en: Translations = {
   best3rd_title: 'Best Third',
   best3rd_title_2: 'Place Teams',
   best3rd_groups_done: n => `${n}/12 groups complete`,
-  col_group: 'Grp',
+  col_group: 'Gr.',
   help_eyebrow: 'The Guide',
   help_title: 'How to Use',
   help_s1_heading: 'Simulate the Tournament',

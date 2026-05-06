@@ -13,7 +13,7 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
   const ranked = rankThirdPlaceTeams(allGroupStandings)
 
   return (
-    <section className="bs-card">
+    <section className="bs-card" style={{ minWidth: 0, maxWidth: '100%' }}>
       <header style={{
         display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
         padding: '14px 18px 12px',
@@ -29,7 +29,7 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
         </div>
       </header>
 
-      <div style={{ overflowX: 'auto' }}>
+      <div style={{ overflowX: 'auto', width: '100%' }}>
         <table className="bs-table">
           <thead>
             <tr>
@@ -95,7 +95,8 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
       <footer style={{
         padding: '8px 18px', borderTop: '1px solid var(--hairline)',
         fontSize: 10, letterSpacing: '0.06em', color: 'var(--muted)',
-        display: 'flex', justifyContent: 'space-between',
+        display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 12px',
+        overflow: 'hidden',
       }}>
         <span>{t.tiebreakers}</span>
         <span>{t.updated_continuously}</span>
