@@ -271,8 +271,9 @@ export default function App() {
               <button
                 className={`bs-group${activeGroup === 'best3rd' ? ' active' : ''}`}
                 onClick={() => setActiveGroup('best3rd')}
+                style={{ justifyContent: 'flex-start' }}
               >
-                <span>{t.best3rd_tab}</span>
+                {t.best3rd_tab.split(' ').map((word, i) => <span key={i}>{word}</span>)}
               </button>
             </span>
           </div>
