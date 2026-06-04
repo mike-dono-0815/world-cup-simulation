@@ -244,8 +244,8 @@ export default function App() {
                     {t.btn_reset}
                   </button>
                 )}
+                <LanguageSelector />
               </div>
-              <LanguageSelector />
             </div>
             <div className="bs-masthead-tagline" style={{
               fontSize: 13, fontStyle: 'italic', color: 'var(--muted)', marginTop: 4,

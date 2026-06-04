@@ -37,6 +37,9 @@ export function LanguageSelector() {
           alt={lang}
           style={{ height: 14, width: 'auto', display: 'block', border: '1px solid rgba(27,26,20,0.25)' }}
         />
+        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--ink)', lineHeight: 1 }}>
+          {lang.toUpperCase()}
+        </span>
         <span style={{ fontSize: 9, color: 'var(--ink)', lineHeight: 1 }}>▾</span>
       </button>
 
