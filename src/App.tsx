@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import type { MatchResult, AutoFillStrategy, KOMatch } from './types'
 import { GROUP_MATCHES, GROUPS } from './data/schedule'
 import { loadResults, saveResults, clearResults } from './lib/storage'
+import { fetchOfficialResults } from './lib/fetchOfficialResults'
 import { calculateGroupStandings, rankThirdPlaceTeams } from './lib/standings'
 import { buildAllKOMatches, getTournamentWinner, KO_SERIALS_BY_STAGE } from './lib/bracket'
 import { autoFillGroupMatch, autoFillKOMatch } from './lib/autofill'
@@ -32,6 +33,8 @@ export default function App() {
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncMsg, setSyncMsg] = useState<string | null>(null)
 
   const phaseLabel = useMemo(() => ({
     groups: t.phase_groups, r32: t.phase_r32, r16: t.phase_r16,
@@ -132,6 +135,7 @@ export default function App() {
     const newResults = { ...results }
     if (fillPhase === 'groups') {
       for (const m of GROUP_MATCHES) {
+        if (newResults[m.serial]?.official) continue
         if (newResults[m.serial]?.homeScore == null || newResults[m.serial]?.awayScore == null) {
           newResults[m.serial] = autoFillGroupMatch(m, strategy)
         }
@@ -140,6 +144,7 @@ export default function App() {
       for (const ko of koMatches) {
         if (!fillPhaseStages.includes(ko.stage)) continue
         if (!ko.home || !ko.away) continue
+        if (newResults[ko.serial]?.official) continue
         if (newResults[ko.serial]?.homeScore != null && newResults[ko.serial]?.awayScore != null) continue
         const filled = autoFillKOMatch(ko, strategy)
         if (filled) newResults[ko.serial] = filled
@@ -148,8 +153,25 @@ export default function App() {
     setResults(newResults)
   }
 
+  async function handleSync() {
+    setIsSyncing(true)
+    setSyncMsg(null)
+    try {
+      const official = await fetchOfficialResults(koMatches)
+      const count = Object.keys(official).length
+      setResults(prev => ({ ...prev, ...official }))
+      setSyncMsg(count > 0 ? t.sync_ok(count) : t.sync_none)
+    } catch {
+      setSyncMsg(t.sync_err)
+    } finally {
+      setIsSyncing(false)
+      setTimeout(() => setSyncMsg(null), 4000)
+    }
+  }
+
   function clearResult(serial: number) {
     setResults(prev => {
+      if (prev[serial]?.official) return prev
       const next = { ...prev }
       delete next[serial]
       return applyWithKOCleanup(prev, next)
@@ -201,6 +223,19 @@ export default function App() {
                 >?</button>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button
+                  className="bs-btn"
+                  onClick={handleSync}
+                  disabled={isSyncing}
+                  style={{ opacity: isSyncing ? 0.6 : 1 }}
+                >
+                  {isSyncing ? '…' : t.btn_sync}
+                </button>
+                {syncMsg && (
+                  <span className="smallcaps" style={{ fontSize: 9, color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+                    {syncMsg}
+                  </span>
+                )}
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
                   {t.btn_autofill}
                 </button>

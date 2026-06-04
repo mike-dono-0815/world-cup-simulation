@@ -14,6 +14,11 @@ export interface Translations {
   tagline: string
   btn_autofill: string
   btn_reset: string
+  btn_sync: string
+  official_badge: string
+  sync_ok: (n: number) => string
+  sync_none: string
+  sync_err: string
   // Phase nav
   phase_groups: string
   phase_r32: string
@@ -184,6 +189,11 @@ const en: Translations = {
   tagline: '"All Eyes on the Beautiful Game" — Predicting the 2026 World Cup Outcome',
   btn_autofill: 'Auto-fill',
   btn_reset: 'Reset',
+  btn_sync: 'Sync Live',
+  official_badge: 'Official',
+  sync_ok: n => `Synced ${n} result${n !== 1 ? 's' : ''}`,
+  sync_none: 'No new results',
+  sync_err: 'Sync failed',
   phase_groups: 'Group Stage',
   phase_r32: 'Round of 32',
   phase_r16: 'Round of 16',
@@ -270,6 +280,11 @@ const de: Translations = {
   tagline: '„Alle Augen auf das schöne Spiel" — Das Ergebnis der WM 2026 voraussagen',
   btn_autofill: 'Auto-Füllen',
   btn_reset: 'Rücksetzen',
+  btn_sync: 'Live-Sync',
+  official_badge: 'Offiziell',
+  sync_ok: n => `${n} Ergebnis${n !== 1 ? 'se' : ''} synchronisiert`,
+  sync_none: 'Keine neuen Ergebnisse',
+  sync_err: 'Sync fehlgeschlagen',
   phase_groups: 'Gruppenphase',
   phase_r32: 'Runde der 32',
   phase_r16: 'Achtelfinale',
@@ -356,6 +371,11 @@ const es: Translations = {
   tagline: '"Todos los Ojos en el Bello Juego" — Prediciendo el Resultado del Mundial 2026',
   btn_autofill: 'Auto-rellenar',
   btn_reset: 'Reiniciar',
+  btn_sync: 'Sincronizar',
+  official_badge: 'Oficial',
+  sync_ok: n => `${n} resultado${n !== 1 ? 's' : ''} sincronizados`,
+  sync_none: 'Sin resultados nuevos',
+  sync_err: 'Error de sincronización',
   phase_groups: 'Fase de Grupos',
   phase_r32: 'Ronda de 32',
   phase_r16: 'Octavos de Final',

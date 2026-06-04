@@ -42,6 +42,7 @@ export interface MatchResult {
   homeScore: number | null
   awayScore: number | null
   penaltyWinner?: 'home' | 'away'   // KO only when scores level
+  official?: boolean                 // fetched from real API — not editable by user
 }
 
 export type AutoFillStrategy =

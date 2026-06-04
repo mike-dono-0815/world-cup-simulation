@@ -60,11 +60,12 @@ export function MatchCard({
 
   const hasResult = hs != null && as_ != null
   const isComplete = hasResult && (!isKO || !isDraw || penWinner != null)
+  const isOfficial = !!result?.official
 
   const [activeScore, setActiveScore] = useState<'home' | 'away' | null>(null)
 
   function handleScoreTap(which: 'home' | 'away') {
-    if (disabled) return
+    if (disabled || isOfficial) return
     if (window.innerWidth > 600) return
     setActiveScore(prev => prev === which ? null : which)
   }
@@ -105,11 +106,11 @@ export function MatchCard({
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{
             fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 700,
-            color: isComplete ? 'var(--advance)' : 'var(--faint)',
+            color: isOfficial ? '#1a6b3c' : isComplete ? 'var(--advance)' : 'var(--faint)',
           }}>
-            {isComplete ? t.reported : t.pending}
+            {isOfficial ? t.official_badge : isComplete ? t.reported : t.pending}
           </span>
-          {onClear && (
+          {onClear && !isOfficial && (
             <button
               onMouseDown={e => e.preventDefault()}
               onClick={e => { e.stopPropagation(); onClear() }}
@@ -145,9 +146,9 @@ export function MatchCard({
 
         {/* Score */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <ScoreEntry value={hs} onChange={setHome} disabled={disabled} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
+          <ScoreEntry value={hs} onChange={setHome} disabled={disabled || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
           <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
-          <ScoreEntry value={as_} onChange={setAway} disabled={disabled} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+          <ScoreEntry value={as_} onChange={setAway} disabled={disabled || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
         </div>
 
         {/* Away */}
@@ -167,7 +168,7 @@ export function MatchCard({
       </div>
 
       {/* Mobile number-pad keypad strip */}
-      {activeScore && !disabled && (
+      {activeScore && !disabled && !isOfficial && (
         <div className="bs-keypad">
           {[0,1,2,3,4,5,6,7,8,9].map(d => (
             <button
@@ -185,7 +186,7 @@ export function MatchCard({
       )}
 
       {/* Penalty picker (KO + draw only) */}
-      {isKO && isDraw && !disabled && (
+      {isKO && isDraw && !disabled && !isOfficial && (
         <div style={{
           padding: '8px 16px', borderTop: '1px solid var(--hairline)',
           display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',

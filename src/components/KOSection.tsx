@@ -143,6 +143,7 @@ function FinalCard({ match, result, onUpdate }: {
     )
   }
   const isPartial = !match.home || !match.away
+  const isOfficial = !!result?.official
   const home = match.home ?? tbd(match.homeSlot)
   const away = match.away ?? tbd(match.awaySlot)
 
@@ -156,7 +157,7 @@ function FinalCard({ match, result, onUpdate }: {
   function setPenalty(w: 'home' | 'away') { onUpdate(match.serial, { homeScore: hs, awayScore: as_, penaltyWinner: w }) }
 
   function handleScoreTap(which: 'home' | 'away') {
-    if (isPartial) return
+    if (isPartial || isOfficial) return
     if (window.innerWidth > 600) return
     setActiveScore(prev => prev === which ? null : which)
   }
@@ -179,9 +180,9 @@ function FinalCard({ match, result, onUpdate }: {
 
           {/* Score */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            <ScoreBig value={hs} onChange={setHome} disabled={isPartial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
+            <ScoreBig value={hs} onChange={setHome} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
             <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
-            <ScoreBig value={as_} onChange={setAway} disabled={isPartial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+            <ScoreBig value={as_} onChange={setAway} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
           </div>
 
           {/* Away */}
@@ -191,7 +192,7 @@ function FinalCard({ match, result, onUpdate }: {
           </div>
         </div>
 
-        {isDraw && !isPartial && (
+        {isDraw && !isPartial && !isOfficial && (
           <div style={{
             marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--hairline)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
@@ -207,7 +208,7 @@ function FinalCard({ match, result, onUpdate }: {
         )}
       </div>
 
-      {activeScore && !isPartial && (
+      {activeScore && !isPartial && !isOfficial && (
         <div className="bs-keypad">
           {[0,1,2,3,4,5,6,7,8,9].map(d => (
             <button
