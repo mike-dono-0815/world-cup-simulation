@@ -26,7 +26,7 @@ export function LanguageSelector() {
         onClick={() => setOpen(o => !o)}
         style={{
           display: 'flex', alignItems: 'center', gap: 4,
-          padding: '5px 8px', cursor: 'pointer',
+          padding: '6px 10px', cursor: 'pointer',
           border: '1px solid var(--ink)',
           background: 'transparent',
           fontFamily: 'inherit',
