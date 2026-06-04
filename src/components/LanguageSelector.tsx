@@ -23,24 +23,17 @@ export function LanguageSelector() {
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button
+        className="bs-btn"
         onClick={() => setOpen(o => !o)}
-        style={{
-          display: 'flex', alignItems: 'center', gap: 4,
-          padding: '6px 10px', cursor: 'pointer',
-          border: '1px solid var(--ink)',
-          background: 'transparent',
-          fontFamily: 'inherit',
-        }}
+        style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px' }}
       >
         <img
           src={`https://flagcdn.com/w40/${LANG_FLAGS[lang]}.png`}
           alt={lang}
-          style={{ height: 14, width: 'auto', display: 'block', border: '1px solid rgba(27,26,20,0.25)' }}
+          style={{ height: 11, width: 'auto', display: 'block', border: '1px solid rgba(27,26,20,0.25)', flexShrink: 0 }}
         />
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: 'var(--ink)', lineHeight: 1 }}>
-          {lang.toUpperCase()}
-        </span>
-        <span style={{ fontSize: 9, color: 'var(--ink)', lineHeight: 1 }}>▾</span>
+        <span style={{ letterSpacing: '0.12em' }}>{lang.toUpperCase()}</span>
+        <span style={{ fontSize: 9, lineHeight: 1 }}>▾</span>
       </button>
 
       {open && (
