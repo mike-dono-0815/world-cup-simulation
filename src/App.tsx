@@ -35,6 +35,7 @@ export default function App() {
   const [showHelp, setShowHelp] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
+  const [officialByPair, setOfficialByPair] = useState<Record<string, MatchResult>>({})
 
   const phaseLabel = useMemo(() => ({
     groups: t.phase_groups, r32: t.phase_r32, r16: t.phase_r16,
@@ -75,6 +76,37 @@ export default function App() {
 
   const koMatches = useMemo(() => buildAllKOMatches(results), [results])
   const champion = useMemo(() => getTournamentWinner(results, koMatches), [results, koMatches])
+
+  // Fetch official results from world-cup-app on mount (auto-updated by cron-job.org)
+  useEffect(() => {
+    fetch('https://world-cup-app-eta.vercel.app/api/sim-results')
+      .then(r => r.ok ? r.json() : {})
+      .then((data: Record<string, MatchResult>) => setOfficialByPair(data))
+      .catch(() => {})
+  }, [])
+
+  // Apply official results whenever the pair-map arrives or the KO bracket resolves
+  useEffect(() => {
+    if (Object.keys(officialByPair).length === 0) return
+    const lookup = new Map<string, number>()
+    for (const m of GROUP_MATCHES) lookup.set(`${m.home}|${m.away}`, m.serial)
+    for (const m of koMatches) {
+      if (m.home && m.away) lookup.set(`${m.home.name}|${m.away.name}`, m.serial)
+    }
+    const bySerial: Record<number, MatchResult> = {}
+    for (const [pair, result] of Object.entries(officialByPair)) {
+      const serial = lookup.get(pair)
+      if (serial != null) bySerial[serial] = result
+    }
+    if (Object.keys(bySerial).length === 0) return
+    setResults(prev => {
+      const hasNew = Object.entries(bySerial).some(([s, r]) => {
+        const p = prev[Number(s)]
+        return p?.homeScore !== r.homeScore || p?.awayScore !== r.awayScore
+      })
+      return hasNew ? { ...prev, ...bySerial } : prev
+    })
+  }, [officialByPair, koMatches])
 
   // Per-phase played counts
   const phaseCounts = useMemo(() => {
