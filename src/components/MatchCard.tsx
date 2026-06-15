@@ -146,9 +146,19 @@ export function MatchCard({
 
         {/* Score */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <ScoreEntry value={hs} onChange={setHome} disabled={disabled || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
-          <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
-          <ScoreEntry value={as_} onChange={setAway} disabled={disabled || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+          {isOfficial && hasResult ? (
+            <>
+              <span className="tnum bs-score-num" style={{ fontSize: 38, fontWeight: 700, lineHeight: 1, minWidth: 28, textAlign: 'center' }}>{hs}</span>
+              <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
+              <span className="tnum bs-score-num" style={{ fontSize: 38, fontWeight: 700, lineHeight: 1, minWidth: 28, textAlign: 'center' }}>{as_}</span>
+            </>
+          ) : (
+            <>
+              <ScoreEntry value={hs} onChange={setHome} disabled={disabled || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
+              <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
+              <ScoreEntry value={as_} onChange={setAway} disabled={disabled || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+            </>
+          )}
         </div>
 
         {/* Away */}
@@ -182,6 +192,19 @@ export function MatchCard({
               }}
             >{d}</button>
           ))}
+        </div>
+      )}
+
+      {/* Penalty winner (read-only) for official KO draws */}
+      {isKO && isDraw && isOfficial && penWinner && (
+        <div style={{
+          padding: '8px 16px', borderTop: '1px solid var(--hairline)',
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span className="smallcaps" style={{ fontSize: 9, letterSpacing: '0.22em' }}>{t.penalties_won_by}</span>
+          <span style={{ fontSize: 12, fontWeight: 600 }}>
+            {t.teamName(penWinner === 'home' ? home.name : away.name)}
+          </span>
         </div>
       )}
 
