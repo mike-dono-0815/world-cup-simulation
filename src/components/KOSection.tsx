@@ -8,6 +8,7 @@ function tbd(slot: string) {
 }
 import { Flag } from './Flag'
 import { KO_SERIALS_BY_STAGE, BRACKET_TREE } from '../lib/bracket'
+import { GROUP_MATCHES } from '../data/schedule'
 
 interface Props {
   koMatches: KOMatch[]
@@ -40,6 +41,10 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
   const { t } = useLanguage()
   const bySerial = new Map(koMatches.map(m => [m.serial, m]))
   const stages = filterStage === 'all' ? STAGE_ORDER : Array.isArray(filterStage) ? filterStage : [filterStage as Stage]
+  const allGroupsDone = GROUP_MATCHES.every(m => {
+    const r = results[m.serial]
+    return r?.homeScore != null && r?.awayScore != null
+  })
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -52,7 +57,7 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
           const r = results[m.serial]
           return r?.homeScore != null && r?.awayScore != null
         }).length
-        const r32Provisional = stage === 'r32' && stageMatches.some(m => !m.home || !m.away)
+        const r32Provisional = stage === 'r32' && !allGroupsDone
 
         return (
           <section key={stage} id={`ko-${stage}`}>
