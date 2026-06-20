@@ -90,33 +90,24 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 {getPairs(stage).map((pair, pairIdx, arr) => (
                   <div key={pairIdx}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      {pair.map(serial => {
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {pair.map((serial, idx) => {
                         const ko = bySerial.get(serial)
                         if (!ko) return null
-                        if (!ko.home && !ko.away) {
-                          return (
-                            <TBDMatchCard
-                              key={ko.serial}
-                              label={ko.label}
-                              homeLabel={ko.homeSlot}
-                              awayLabel={ko.awaySlot}
-                            />
-                          )
-                        }
-                        const isPartial = !ko.home || !ko.away
+                        const card = !ko.home && !ko.away
+                          ? <TBDMatchCard key={ko.serial} label={ko.label} homeLabel={ko.homeSlot} awayLabel={ko.awaySlot} />
+                          : <MatchCard key={ko.serial} label={ko.label} home={ko.home ?? tbd(ko.homeSlot)} away={ko.away ?? tbd(ko.awaySlot)} result={results[ko.serial]} onUpdate={r => onUpdate(ko.serial, r)} onClear={() => onClear(ko.serial)} isKO disabled={!ko.home || !ko.away} />
                         return (
-                          <MatchCard
-                            key={ko.serial}
-                            label={ko.label}
-                            home={ko.home ?? tbd(ko.homeSlot)}
-                            away={ko.away ?? tbd(ko.awaySlot)}
-                            result={results[ko.serial]}
-                            onUpdate={r => onUpdate(ko.serial, r)}
-                            onClear={() => onClear(ko.serial)}
-                            isKO
-                            disabled={isPartial}
-                          />
+                          <div key={ko.serial}>
+                            {card}
+                            {idx === 0 && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0' }}>
+                                <div style={{ flex: 1, height: 1, background: 'var(--hairline)' }} />
+                                <span className="smallcaps" style={{ fontSize: 9, letterSpacing: '0.2em', color: 'var(--muted)' }}>vs</span>
+                                <div style={{ flex: 1, height: 1, background: 'var(--hairline)' }} />
+                              </div>
+                            )}
+                          </div>
                         )
                       })}
                     </div>
