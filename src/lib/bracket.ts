@@ -140,7 +140,7 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   const top8Groups = top8Thirds.map(t => t.group)
   const thirdByGroup = new Map(top8Thirds.map(t => [t.group, t.standing]))
 
-  // 3rd-place assignments are only stable once every group is fully played
+  // Whether all 12 groups have finished (used only for slot label display)
   const allGroupsDone = 'ABCDEFGHIJKL'.split('').every(g => {
     const gMatches = GROUP_MATCHES.filter(m => m.group === g)
     return gMatches.every(m => {
@@ -149,10 +149,10 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     })
   })
 
-  // Step 3: look up assignment (only when all 12 groups are finalised)
+  // Step 3: look up assignment using current top-8 thirds ("as it stands")
   const lookup = getAssignmentLookup()
   const key = [...top8Groups].sort().join('')
-  const assignments = allGroupsDone ? lookup.get(key) : undefined
+  const assignments = lookup.get(key)
   const slotAssignment = new Map<number, string>()
   if (assignments) {
     for (let i = 0; i < 8; i++) {
@@ -160,7 +160,7 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     }
   }
 
-  // Helper: resolve group slot → KOTeam
+  // Helper: resolve group slot → KOTeam (current standings, shown once ≥1 game played)
   function resolveGroupSlot(slot: string): KOTeam | null {
     const rank = slot[0]  // '1', '2', '3'
     const grp  = slot[1]  // 'A'–'L'
@@ -169,13 +169,12 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     const idx = rank === '1' ? 0 : rank === '2' ? 1 : 2
     const s = standings[idx]
     if (!s) return null
-    // Only return if all 6 group matches are done
     const gMatches = GROUP_MATCHES.filter(m => m.group === grp)
-    const allDone = gMatches.every(m => {
+    const anyDone = gMatches.some(m => {
       const r = results[m.serial]
       return r?.homeScore != null && r?.awayScore != null
     })
-    if (!allDone) return null
+    if (!anyDone) return null
     return standingToKOTeam(s, slot)
   }
 
@@ -190,9 +189,14 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     const serial = Number(serialStr)
     const homeTeam = resolveGroupSlot(homeSlot)
     let awayTeam: KOTeam | null = null
-    if (allGroupsDone) {
-      const assignedGroup = slotAssignment.get(serial)
-      if (assignedGroup) {
+    const assignedGroup = slotAssignment.get(serial)
+    if (assignedGroup) {
+      const gMatches = GROUP_MATCHES.filter(m => m.group === assignedGroup)
+      const anyDone = gMatches.some(m => {
+        const r = results[m.serial]
+        return r?.homeScore != null && r?.awayScore != null
+      })
+      if (anyDone) {
         const s = thirdByGroup.get(assignedGroup)
         if (s) awayTeam = standingToKOTeam(s, `3${assignedGroup}`)
       }
@@ -207,7 +211,8 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   }
   for (const [serialStr, homeSlot] of Object.entries(R32_BEST3)) {
     const serial = Number(serialStr)
-    const assignedGroup = slotAssignment.get(serial)
+    // Only show specific "3X" slot label once assignment is final; otherwise show eligible groups
+    const assignedGroup = allGroupsDone ? slotAssignment.get(serial) : undefined
     slotLabels.set(serial, { homeSlot, awaySlot: assignedGroup ? `3${assignedGroup}` : `${R32_BEST3_GROUPS[serial]} 3rd` })
   }
   for (const serial of KO_SERIALS_BY_STAGE.r16) {
