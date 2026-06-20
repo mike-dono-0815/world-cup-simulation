@@ -52,6 +52,7 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
           const r = results[m.serial]
           return r?.homeScore != null && r?.awayScore != null
         }).length
+        const r32Provisional = stage === 'r32' && stageMatches.some(m => !m.home || !m.away)
 
         return (
           <section key={stage} id={`ko-${stage}`}>
@@ -61,6 +62,11 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
             }}>
               <h2 className="font-didot" style={{ fontSize: 26, margin: 0, lineHeight: 1, letterSpacing: '-0.005em' }}>
                 {({ r32: t.phase_r32, r16: t.phase_r16, qf: t.phase_qf, sf: t.phase_sf, '3rd': t.phase_3rd, final: t.phase_final } as Record<Stage, string>)[stage]}
+                {r32Provisional && (
+                  <span className="font-didot" style={{ fontSize: 14, fontWeight: 400, fontStyle: 'italic', color: 'var(--muted)', marginLeft: 8 }}>
+                    (As It Stands)
+                  </span>
+                )}
               </h2>
               <span className="smallcaps">
                 {t.ko_reported(playedInStage, stageMatches.length)}
