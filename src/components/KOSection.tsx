@@ -7,7 +7,7 @@ function tbd(slot: string) {
   return { name: 'TBD', flagCode: '', qualLabel: slot }
 }
 import { Flag } from './Flag'
-import { KO_SERIALS_BY_STAGE, BRACKET_TREE } from '../lib/bracket'
+import { KO_SERIALS_BY_STAGE, BRACKET_TREE, serialToLabel } from '../lib/bracket'
 import { GROUP_MATCHES } from '../data/schedule'
 
 interface Props {
@@ -111,9 +111,20 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
                         )
                       })}
                     </div>
-                    {pairIdx < arr.length - 1 && (
-                      <div style={{ margin: '14px 0', borderBottom: '1px solid var(--hairline)' }} />
-                    )}
+                    {pairIdx < arr.length - 1 && (() => {
+                      const nextSerial = (NEXT_STAGE_SERIALS[stage] ?? [])[pairIdx]
+                      const nextLabel = nextSerial ? serialToLabel(nextSerial) : null
+                      return (
+                        <div style={{ margin: '18px 0 14px' }}>
+                          <div style={{ borderBottom: '2px solid var(--ink)' }} />
+                          {nextLabel && (
+                            <div style={{ textAlign: 'center', paddingTop: 5, fontSize: 10, fontStyle: 'italic', color: 'var(--muted)' }}>
+                              winners advance to {nextLabel}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })()}
                   </div>
                 ))}
               </div>
