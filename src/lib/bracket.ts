@@ -22,6 +22,21 @@ function getAssignmentLookup(): Map<string, string[]> {
   return lookup
 }
 
+// Confirmed R32 qualifiers keyed by group slot.
+// Used as a fallback when group results haven't been loaded yet — computed standings
+// take precedence once any match in the group has a result.
+const CONFIRMED_R32_SLOTS: Record<string, KOTeam> = {
+  '1A': { name: 'Mexico',        flagCode: 'mx', impliedPct: 1.41,  fifaRanking: 15, qualLabel: '1A' },
+  '2A': { name: 'South Africa',  flagCode: 'za', impliedPct: 0.12,  fifaRanking: 60, qualLabel: '2A' },
+  '1B': { name: 'Switzerland',   flagCode: 'ch', impliedPct: 0.99,  fifaRanking: 19, qualLabel: '1B' },
+  '2B': { name: 'Canada',        flagCode: 'ca', impliedPct: 0.50,  fifaRanking: 30, qualLabel: '2B' },
+  '1C': { name: 'Brazil',        flagCode: 'br', impliedPct: 10.53, fifaRanking: 6,  qualLabel: '1C' },
+  '2C': { name: 'Morocco',       flagCode: 'ma', impliedPct: 1.64,  fifaRanking: 8,  qualLabel: '2C' },
+  '1D': { name: 'United States', flagCode: 'us', impliedPct: 1.52,  fifaRanking: 16, qualLabel: '1D' },
+  '1E': { name: 'Germany',       flagCode: 'de', impliedPct: 6.67,  fifaRanking: 10, qualLabel: '1E' },
+  '1J': { name: 'Argentina',     flagCode: 'ar', impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
+}
+
 // R32 fixed slots (no 3rd-place team)
 const R32_FIXED: Array<{ serial: number; homeSlot: string; awaySlot: string }> = [
   { serial: 73, homeSlot: '2A', awaySlot: '2B' },
@@ -160,21 +175,23 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
     }
   }
 
-  // Helper: resolve group slot → KOTeam (current standings, shown once ≥1 game played)
+  // Helper: resolve group slot → KOTeam.
+  // Returns computed standings once any group match has a result;
+  // falls back to CONFIRMED_R32_SLOTS for known qualifiers when no results are loaded.
   function resolveGroupSlot(slot: string): KOTeam | null {
     const rank = slot[0]  // '1', '2', '3'
     const grp  = slot[1]  // 'A'–'L'
     const standings = allStandings.get(grp)
-    if (!standings) return null
-    const idx = rank === '1' ? 0 : rank === '2' ? 1 : 2
-    const s = standings[idx]
-    if (!s) return null
     const gMatches = GROUP_MATCHES.filter(m => m.group === grp)
     const anyDone = gMatches.some(m => {
       const r = results[m.serial]
       return r?.homeScore != null && r?.awayScore != null
     })
-    if (!anyDone) return null
+    if (!anyDone) return CONFIRMED_R32_SLOTS[slot] ?? null
+    if (!standings) return CONFIRMED_R32_SLOTS[slot] ?? null
+    const idx = rank === '1' ? 0 : rank === '2' ? 1 : 2
+    const s = standings[idx]
+    if (!s) return null
     return standingToKOTeam(s, slot)
   }
 
