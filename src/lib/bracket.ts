@@ -26,15 +26,19 @@ function getAssignmentLookup(): Map<string, string[]> {
 // Used as a fallback when group results haven't been loaded yet — computed standings
 // take precedence once any match in the group has a result.
 const CONFIRMED_R32_SLOTS: Record<string, KOTeam> = {
-  '1A': { name: 'Mexico',        flagCode: 'mx', impliedPct: 1.41,  fifaRanking: 15, qualLabel: '1A' },
-  '2A': { name: 'South Africa',  flagCode: 'za', impliedPct: 0.12,  fifaRanking: 60, qualLabel: '2A' },
-  '1B': { name: 'Switzerland',   flagCode: 'ch', impliedPct: 0.99,  fifaRanking: 19, qualLabel: '1B' },
-  '2B': { name: 'Canada',        flagCode: 'ca', impliedPct: 0.50,  fifaRanking: 30, qualLabel: '2B' },
-  '1C': { name: 'Brazil',        flagCode: 'br', impliedPct: 10.53, fifaRanking: 6,  qualLabel: '1C' },
-  '2C': { name: 'Morocco',       flagCode: 'ma', impliedPct: 1.64,  fifaRanking: 8,  qualLabel: '2C' },
-  '1D': { name: 'United States', flagCode: 'us', impliedPct: 1.52,  fifaRanking: 16, qualLabel: '1D' },
-  '1E': { name: 'Germany',       flagCode: 'de', impliedPct: 6.67,  fifaRanking: 10, qualLabel: '1E' },
-  '1J': { name: 'Argentina',     flagCode: 'ar', impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
+  '1A': { name: 'Mexico',           flagCode: 'mx', impliedPct: 1.41,  fifaRanking: 15, qualLabel: '1A' },
+  '2A': { name: 'South Africa',     flagCode: 'za', impliedPct: 0.12,  fifaRanking: 60, qualLabel: '2A' },
+  '1B': { name: 'Switzerland',      flagCode: 'ch', impliedPct: 0.99,  fifaRanking: 19, qualLabel: '1B' },
+  '2B': { name: 'Canada',           flagCode: 'ca', impliedPct: 0.50,  fifaRanking: 30, qualLabel: '2B' },
+  '1C': { name: 'Brazil',           flagCode: 'br', impliedPct: 10.53, fifaRanking: 6,  qualLabel: '1C' },
+  '2C': { name: 'Morocco',          flagCode: 'ma', impliedPct: 1.64,  fifaRanking: 8,  qualLabel: '2C' },
+  '1D': { name: 'United States',    flagCode: 'us', impliedPct: 1.52,  fifaRanking: 16, qualLabel: '1D' },
+  '2D': { name: 'Australia',        flagCode: 'au', impliedPct: 0.22,  fifaRanking: 27, qualLabel: '2D' },
+  '1E': { name: 'Germany',          flagCode: 'de', impliedPct: 6.67,  fifaRanking: 10, qualLabel: '1E' },
+  '2E': { name: "Côte d'Ivoire",    flagCode: 'ci', impliedPct: 0.40,  fifaRanking: 34, qualLabel: '2E' },
+  '1F': { name: 'Netherlands',      flagCode: 'nl', impliedPct: 4.76,  fifaRanking: 7,  qualLabel: '1F' },
+  '2F': { name: 'Japan',            flagCode: 'jp', impliedPct: 1.96,  fifaRanking: 18, qualLabel: '2F' },
+  '1J': { name: 'Argentina',        flagCode: 'ar', impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
 }
 
 // R32 fixed slots (no 3rd-place team)
