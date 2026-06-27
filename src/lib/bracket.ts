@@ -38,7 +38,13 @@ const CONFIRMED_R32_SLOTS: Record<string, KOTeam> = {
   '2E': { name: "Côte d'Ivoire",    flagCode: 'ci', impliedPct: 0.40,  fifaRanking: 34, qualLabel: '2E' },
   '1F': { name: 'Netherlands',      flagCode: 'nl', impliedPct: 4.76,  fifaRanking: 7,  qualLabel: '1F' },
   '2F': { name: 'Japan',            flagCode: 'jp', impliedPct: 1.96,  fifaRanking: 18, qualLabel: '2F' },
-  '1J': { name: 'Argentina',        flagCode: 'ar', impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
+  '1G': { name: 'Belgium',          flagCode: 'be', impliedPct: 2.78,  fifaRanking: 9,  qualLabel: '1G' },
+  '2G': { name: 'Egypt',           flagCode: 'eg', impliedPct: 0.33,  fifaRanking: 29, qualLabel: '2G' },
+  '1H': { name: 'Spain',           flagCode: 'es', impliedPct: 18.18, fifaRanking: 2,  qualLabel: '1H' },
+  '2H': { name: 'Cape Verde',      flagCode: 'cv', impliedPct: 0.10,  fifaRanking: 69, qualLabel: '2H' },
+  '1I': { name: 'France',          flagCode: 'fr', impliedPct: 15.38, fifaRanking: 1,  qualLabel: '1I' },
+  '2I': { name: 'Norway',          flagCode: 'no', impliedPct: 3.45,  fifaRanking: 31, qualLabel: '2I' },
+  '1J': { name: 'Argentina',       flagCode: 'ar', impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
 }
 
 // R32 fixed slots (no 3rd-place team)
