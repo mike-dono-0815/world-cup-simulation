@@ -112,3 +112,10 @@ export const GROUP_MATCH_MAP = new Map(GROUP_MATCHES.map(m => [m.serial, m]))
 
 export const GROUPS = ['A','B','C','D','E','F','G','H','I','J','K','L'] as const
 export type GroupId = typeof GROUPS[number]
+
+// Confirmed group-stage results. Used as initial state so the sim reflects
+// reality even before the API sync fires. Keyed by serial number.
+export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: number; official: true }> = {
+  59: { homeScore: 3, awayScore: 3, official: true }, // Algeria 3-3 Austria
+  60: { homeScore: 1, awayScore: 3, official: true }, // Jordan 1-3 Argentina
+}

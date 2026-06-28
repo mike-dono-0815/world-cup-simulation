@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import type { MatchResult, AutoFillStrategy, KOMatch } from './types'
-import { GROUP_MATCHES, GROUPS } from './data/schedule'
+import { GROUP_MATCHES, GROUPS, KNOWN_RESULTS } from './data/schedule'
 import { loadResults, saveResults, clearResults } from './lib/storage'
 import { fetchOfficialResults } from './lib/fetchOfficialResults'
 import { calculateGroupStandings, rankThirdPlaceTeams } from './lib/standings'
@@ -27,7 +27,7 @@ const PHASES: Array<{ id: Phase; num: string; total: number }> = [
 
 export default function App() {
   const { t } = useLanguage()
-  const [results, setResults] = useState<Record<number, MatchResult>>(() => loadResults())
+  const [results, setResults] = useState<Record<number, MatchResult>>(() => ({ ...KNOWN_RESULTS, ...loadResults() }))
   const [activePhase, setActivePhase] = useState<Phase>('groups')
   const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number] | 'best3rd'>('A')
   const [showAutoFill, setShowAutoFill] = useState(false)
