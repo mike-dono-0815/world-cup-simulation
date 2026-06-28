@@ -44,7 +44,12 @@ const CONFIRMED_R32_SLOTS: Record<string, KOTeam> = {
   '2H': { name: 'Cape Verde',      flagCode: 'cv', impliedPct: 0.10,  fifaRanking: 69, qualLabel: '2H' },
   '1I': { name: 'France',          flagCode: 'fr', impliedPct: 15.38, fifaRanking: 1,  qualLabel: '1I' },
   '2I': { name: 'Norway',          flagCode: 'no', impliedPct: 3.45,  fifaRanking: 31, qualLabel: '2I' },
-  '1J': { name: 'Argentina',       flagCode: 'ar', impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
+  '2J': { name: 'Austria',         flagCode: 'at',     impliedPct: 0.99,  fifaRanking: 24, qualLabel: '2J' },
+  '1J': { name: 'Argentina',       flagCode: 'ar',     impliedPct: 10.53, fifaRanking: 3,  qualLabel: '1J' },
+  '1K': { name: 'Colombia',        flagCode: 'co',     impliedPct: 2.44,  fifaRanking: 13, qualLabel: '1K' },
+  '2K': { name: 'Portugal',        flagCode: 'pt',     impliedPct: 8.33,  fifaRanking: 5,  qualLabel: '2K' },
+  '1L': { name: 'England',         flagCode: 'gb-eng', impliedPct: 13.33, fifaRanking: 4,  qualLabel: '1L' },
+  '2L': { name: 'Croatia',         flagCode: 'hr',     impliedPct: 1.10,  fifaRanking: 11, qualLabel: '2L' },
 }
 
 // R32 fixed slots (no 3rd-place team)
