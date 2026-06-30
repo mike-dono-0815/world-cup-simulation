@@ -115,7 +115,12 @@ export type GroupId = typeof GROUPS[number]
 
 // Confirmed group-stage results. Used as initial state so the sim reflects
 // reality even before the API sync fires. Keyed by serial number.
-export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: number; official: true }> = {
+export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: number; penaltyWinner?: 'home' | 'away'; official: true }> = {
   59: { homeScore: 3, awayScore: 3, official: true }, // Algeria 3-3 Austria
   60: { homeScore: 1, awayScore: 3, official: true }, // Jordan 1-3 Argentina
+  // R32 results
+  73: { homeScore: 0, awayScore: 1, official: true }, // South Africa 0-1 Canada
+  74: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Germany 1-1 Paraguay AET (Paraguay 4-3 pens)
+  75: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Netherlands 1-1 Morocco AET (Morocco 3-2 pens)
+  76: { homeScore: 2, awayScore: 1, official: true }, // Brazil 2-1 Japan
 }
