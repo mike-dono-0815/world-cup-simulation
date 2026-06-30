@@ -193,9 +193,12 @@ function FinalCard({ match, result, onUpdate }: {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, justifyContent: 'center' }}>
           {/* Home */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, opacity: winner === 'away' ? 0.35 : 1 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
             <div style={{ fontSize: 16, fontWeight: winner === 'home' ? 700 : 600, lineHeight: 1.2, textAlign: 'right' }}>{t.teamName(home.name)}</div>
-            <Flag code={home.flagCode} size={44} />
+            {winner === 'home'
+              ? <div style={{ padding: 4, borderRadius: '50%', border: '2px solid var(--ink)', lineHeight: 0, flexShrink: 0 }}><Flag code={home.flagCode} size={44} /></div>
+              : <Flag code={home.flagCode} size={44} />
+            }
           </div>
 
           {/* Score */}
@@ -206,9 +209,12 @@ function FinalCard({ match, result, onUpdate }: {
           </div>
 
           {/* Away */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6, opacity: winner === 'home' ? 0.35 : 1 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
             <div style={{ fontSize: 16, fontWeight: winner === 'away' ? 700 : 600, lineHeight: 1.2 }}>{t.teamName(away.name)}</div>
-            <Flag code={away.flagCode} size={44} />
+            {winner === 'away'
+              ? <div style={{ padding: 4, borderRadius: '50%', border: '2px solid var(--ink)', lineHeight: 0, flexShrink: 0 }}><Flag code={away.flagCode} size={44} /></div>
+              : <Flag code={away.flagCode} size={44} />
+            }
           </div>
         </div>
 

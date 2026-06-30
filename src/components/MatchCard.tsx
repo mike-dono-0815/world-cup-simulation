@@ -123,8 +123,11 @@ export function MatchCard({
       {/* Body */}
       <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
         {/* Home */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, opacity: winner === 'away' ? 0.35 : 1 }}>
-          <Flag code={home.flagCode} size={26} />
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          {winner === 'home'
+            ? <div style={{ padding: 3, borderRadius: '50%', border: '2px solid var(--ink)', lineHeight: 0, flexShrink: 0 }}><Flag code={home.flagCode} size={26} /></div>
+            : <Flag code={home.flagCode} size={26} />
+          }
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 15, fontWeight: winner === 'home' ? 700 : 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {t.teamName(home.name)}
@@ -155,7 +158,7 @@ export function MatchCard({
         </div>
 
         {/* Away */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end', minWidth: 0, opacity: winner === 'home' ? 0.35 : 1 }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end', minWidth: 0 }}>
           <div style={{ minWidth: 0, textAlign: 'right' }}>
             <div style={{ fontSize: 15, fontWeight: winner === 'away' ? 700 : 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {t.teamName(away.name)}
@@ -166,7 +169,10 @@ export function MatchCard({
               </div>
             )}
           </div>
-          <Flag code={away.flagCode} size={26} />
+          {winner === 'away'
+            ? <div style={{ padding: 3, borderRadius: '50%', border: '2px solid var(--ink)', lineHeight: 0, flexShrink: 0 }}><Flag code={away.flagCode} size={26} /></div>
+            : <Flag code={away.flagCode} size={26} />
+          }
         </div>
       </div>
 
