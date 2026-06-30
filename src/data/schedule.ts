@@ -116,9 +116,91 @@ export type GroupId = typeof GROUPS[number]
 // Confirmed group-stage results. Used as initial state so the sim reflects
 // reality even before the API sync fires. Keyed by serial number.
 export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: number; penaltyWinner?: 'home' | 'away'; official: true }> = {
+  // GROUP A
+  1:  { homeScore: 2, awayScore: 0, official: true }, // Mexico 2-0 South Africa
+  2:  { homeScore: 2, awayScore: 1, official: true }, // South Korea 2-1 Czechia
+  3:  { homeScore: 1, awayScore: 1, official: true }, // Czechia 1-1 South Africa
+  4:  { homeScore: 1, awayScore: 0, official: true }, // Mexico 1-0 South Korea
+  5:  { homeScore: 0, awayScore: 3, official: true }, // Czechia 0-3 Mexico
+  6:  { homeScore: 1, awayScore: 0, official: true }, // South Africa 1-0 South Korea
+  // GROUP B
+  7:  { homeScore: 1, awayScore: 1, official: true }, // Canada 1-1 Bosnia & Herzegovina
+  8:  { homeScore: 1, awayScore: 1, official: true }, // Qatar 1-1 Switzerland
+  9:  { homeScore: 4, awayScore: 1, official: true }, // Switzerland 4-1 Bosnia & Herzegovina
+  10: { homeScore: 6, awayScore: 0, official: true }, // Canada 6-0 Qatar
+  11: { homeScore: 2, awayScore: 1, official: true }, // Switzerland 2-1 Canada
+  12: { homeScore: 3, awayScore: 1, official: true }, // Bosnia & Herzegovina 3-1 Qatar
+  // GROUP C
+  13: { homeScore: 1, awayScore: 1, official: true }, // Brazil 1-1 Morocco
+  14: { homeScore: 0, awayScore: 1, official: true }, // Haiti 0-1 Scotland
+  15: { homeScore: 3, awayScore: 0, official: true }, // Brazil 3-0 Haiti
+  16: { homeScore: 0, awayScore: 1, official: true }, // Scotland 0-1 Morocco
+  17: { homeScore: 0, awayScore: 3, official: true }, // Scotland 0-3 Brazil
+  18: { homeScore: 4, awayScore: 2, official: true }, // Morocco 4-2 Haiti
+  // GROUP D
+  19: { homeScore: 4, awayScore: 1, official: true }, // USA 4-1 Paraguay
+  20: { homeScore: 2, awayScore: 0, official: true }, // Australia 2-0 Türkiye
+  21: { homeScore: 2, awayScore: 0, official: true }, // USA 2-0 Australia
+  22: { homeScore: 0, awayScore: 1, official: true }, // Türkiye 0-1 Paraguay
+  23: { homeScore: 3, awayScore: 2, official: true }, // Türkiye 3-2 USA
+  24: { homeScore: 0, awayScore: 0, official: true }, // Paraguay 0-0 Australia
+  // GROUP E
+  25: { homeScore: 7, awayScore: 1, official: true }, // Germany 7-1 Curaçao
+  26: { homeScore: 1, awayScore: 0, official: true }, // Côte d'Ivoire 1-0 Ecuador
+  27: { homeScore: 2, awayScore: 1, official: true }, // Germany 2-1 Côte d'Ivoire
+  28: { homeScore: 0, awayScore: 0, official: true }, // Ecuador 0-0 Curaçao
+  29: { homeScore: 0, awayScore: 2, official: true }, // Curaçao 0-2 Côte d'Ivoire
+  30: { homeScore: 2, awayScore: 1, official: true }, // Ecuador 2-1 Germany
+  // GROUP F
+  31: { homeScore: 2, awayScore: 2, official: true }, // Netherlands 2-2 Japan
+  32: { homeScore: 5, awayScore: 1, official: true }, // Sweden 5-1 Tunisia
+  33: { homeScore: 5, awayScore: 1, official: true }, // Netherlands 5-1 Sweden
+  34: { homeScore: 0, awayScore: 4, official: true }, // Tunisia 0-4 Japan
+  35: { homeScore: 1, awayScore: 1, official: true }, // Japan 1-1 Sweden
+  36: { homeScore: 1, awayScore: 3, official: true }, // Tunisia 1-3 Netherlands
+  // GROUP G
+  37: { homeScore: 1, awayScore: 1, official: true }, // Belgium 1-1 Egypt
+  38: { homeScore: 2, awayScore: 2, official: true }, // Iran 2-2 New Zealand
+  39: { homeScore: 0, awayScore: 0, official: true }, // Belgium 0-0 Iran
+  40: { homeScore: 1, awayScore: 3, official: true }, // New Zealand 1-3 Egypt
+  41: { homeScore: 1, awayScore: 1, official: true }, // Egypt 1-1 Iran
+  42: { homeScore: 1, awayScore: 5, official: true }, // New Zealand 1-5 Belgium
+  // GROUP H
+  43: { homeScore: 0, awayScore: 0, official: true }, // Spain 0-0 Cape Verde
+  44: { homeScore: 1, awayScore: 1, official: true }, // Saudi Arabia 1-1 Uruguay
+  45: { homeScore: 4, awayScore: 0, official: true }, // Spain 4-0 Saudi Arabia
+  46: { homeScore: 2, awayScore: 2, official: true }, // Uruguay 2-2 Cape Verde
+  47: { homeScore: 0, awayScore: 0, official: true }, // Cape Verde 0-0 Saudi Arabia
+  48: { homeScore: 0, awayScore: 1, official: true }, // Uruguay 0-1 Spain
+  // GROUP I
+  49: { homeScore: 3, awayScore: 1, official: true }, // France 3-1 Senegal
+  50: { homeScore: 1, awayScore: 4, official: true }, // Iraq 1-4 Norway
+  51: { homeScore: 3, awayScore: 0, official: true }, // France 3-0 Iraq
+  52: { homeScore: 3, awayScore: 2, official: true }, // Norway 3-2 Senegal
+  53: { homeScore: 1, awayScore: 4, official: true }, // Norway 1-4 France
+  54: { homeScore: 5, awayScore: 0, official: true }, // Senegal 5-0 Iraq
+  // GROUP J
+  55: { homeScore: 3, awayScore: 0, official: true }, // Argentina 3-0 Algeria
+  56: { homeScore: 3, awayScore: 1, official: true }, // Austria 3-1 Jordan
+  57: { homeScore: 2, awayScore: 0, official: true }, // Argentina 2-0 Austria
+  58: { homeScore: 1, awayScore: 2, official: true }, // Jordan 1-2 Algeria
   59: { homeScore: 3, awayScore: 3, official: true }, // Algeria 3-3 Austria
   60: { homeScore: 1, awayScore: 3, official: true }, // Jordan 1-3 Argentina
-  // R32 results
+  // GROUP K
+  61: { homeScore: 1, awayScore: 1, official: true }, // Portugal 1-1 DR Congo
+  62: { homeScore: 1, awayScore: 3, official: true }, // Uzbekistan 1-3 Colombia
+  63: { homeScore: 5, awayScore: 0, official: true }, // Portugal 5-0 Uzbekistan
+  64: { homeScore: 1, awayScore: 0, official: true }, // Colombia 1-0 DR Congo
+  65: { homeScore: 0, awayScore: 0, official: true }, // Colombia 0-0 Portugal
+  66: { homeScore: 3, awayScore: 1, official: true }, // DR Congo 3-1 Uzbekistan
+  // GROUP L
+  67: { homeScore: 4, awayScore: 2, official: true }, // England 4-2 Croatia
+  68: { homeScore: 1, awayScore: 0, official: true }, // Ghana 1-0 Panama
+  69: { homeScore: 0, awayScore: 0, official: true }, // England 0-0 Ghana
+  70: { homeScore: 0, awayScore: 1, official: true }, // Panama 0-1 Croatia
+  71: { homeScore: 0, awayScore: 2, official: true }, // Panama 0-2 England
+  72: { homeScore: 2, awayScore: 1, official: true }, // Croatia 2-1 Ghana
+  // R32
   73: { homeScore: 0, awayScore: 1, official: true }, // South Africa 0-1 Canada
   74: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Germany 1-1 Paraguay AET (Paraguay 4-3 pens)
   75: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Netherlands 1-1 Morocco AET (Morocco 3-2 pens)
