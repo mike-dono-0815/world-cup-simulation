@@ -27,17 +27,6 @@ interface Props {
   disabled?: boolean
 }
 
-function formatDate(iso?: string): string {
-  if (!iso) return ''
-  try {
-    const d = new Date(iso)
-    return d.toLocaleString(undefined, {
-      month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit', hour12: false,
-    })
-  } catch { return iso }
-}
-
 export function MatchCard({
   label, date, venue, oddsHome, oddsDraw, oddsAway,
   home, away, result, onUpdate, onClear, isKO, disabled,
@@ -94,7 +83,7 @@ export function MatchCard({
             <span className="bs-match-date smallcaps" style={{
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
-              {formatDate(date)}
+              {t.formatMatchDate(date)}
             </span>
           )}
           {venue && (
@@ -257,16 +246,28 @@ export function MatchCard({
 }
 
 export function TBDMatchCard({
-  label, homeLabel, awayLabel,
-}: { label: string; homeLabel: string; awayLabel: string; home?: unknown; away?: unknown }) {
+  label, homeLabel, awayLabel, date, venue,
+}: { label: string; homeLabel: string; awayLabel: string; home?: unknown; away?: unknown; date?: string; venue?: string }) {
   const { t } = useLanguage()
   return (
     <article className="bs-card" style={{ opacity: 0.5 }}>
       <header style={{
         padding: '10px 16px 8px', borderBottom: '1px solid var(--hairline)',
-        display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+        display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap',
       }}>
-        <span className="font-didot tnum" style={{ fontSize: 16, color: 'var(--muted)' }}>{label}</span>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, minWidth: 0 }}>
+          <span className="font-didot tnum" style={{ fontSize: 16, color: 'var(--muted)' }}>{label}</span>
+          {date && (
+            <span className="bs-match-date smallcaps" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {t.formatMatchDate(date)}
+            </span>
+          )}
+          {venue && (
+            <span className="bs-match-venue smallcaps" style={{ whiteSpace: 'nowrap' }}>
+              {date ? '· ' : ''}{venue}
+            </span>
+          )}
+        </div>
         <span className="smallcaps" style={{ fontSize: 9 }}>{t.tbd_awaits}</span>
       </header>
       <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>

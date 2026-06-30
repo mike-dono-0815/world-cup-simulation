@@ -83,8 +83,8 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
             ) : stage === '3rd' ? (
               (() => {
                 const ko = stageMatches[0]
-                if (!ko.home && !ko.away) return <TBDMatchCard label={ko.label} homeLabel={ko.homeSlot} awayLabel={ko.awaySlot} />
-                return <MatchCard label={ko.label} home={ko.home ?? tbd(ko.homeSlot)} away={ko.away ?? tbd(ko.awaySlot)} result={results[ko.serial]} onUpdate={r => onUpdate(ko.serial, r)} onClear={() => onClear(ko.serial)} isKO disabled={!ko.home || !ko.away} />
+                if (!ko.home && !ko.away) return <TBDMatchCard label={ko.label} homeLabel={ko.homeSlot} awayLabel={ko.awaySlot} date={ko.date} venue={ko.venue} />
+                return <MatchCard label={ko.label} home={ko.home ?? tbd(ko.homeSlot)} away={ko.away ?? tbd(ko.awaySlot)} result={results[ko.serial]} onUpdate={r => onUpdate(ko.serial, r)} onClear={() => onClear(ko.serial)} isKO disabled={!ko.home || !ko.away} date={ko.date} venue={ko.venue} />
               })()
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -95,8 +95,8 @@ export function KOSection({ koMatches, results, onUpdate, onClear, filterStage =
                         const ko = bySerial.get(serial)
                         if (!ko) return null
                         const card = !ko.home && !ko.away
-                          ? <TBDMatchCard key={ko.serial} label={ko.label} homeLabel={ko.homeSlot} awayLabel={ko.awaySlot} />
-                          : <MatchCard key={ko.serial} label={ko.label} home={ko.home ?? tbd(ko.homeSlot)} away={ko.away ?? tbd(ko.awaySlot)} result={results[ko.serial]} onUpdate={r => onUpdate(ko.serial, r)} onClear={() => onClear(ko.serial)} isKO disabled={!ko.home || !ko.away} />
+                          ? <TBDMatchCard key={ko.serial} label={ko.label} homeLabel={ko.homeSlot} awayLabel={ko.awaySlot} date={ko.date} venue={ko.venue} />
+                          : <MatchCard key={ko.serial} label={ko.label} home={ko.home ?? tbd(ko.homeSlot)} away={ko.away ?? tbd(ko.awaySlot)} result={results[ko.serial]} onUpdate={r => onUpdate(ko.serial, r)} onClear={() => onClear(ko.serial)} isKO disabled={!ko.home || !ko.away} date={ko.date} venue={ko.venue} />
                         return (
                           <div key={ko.serial}>
                             {card}
@@ -142,6 +142,11 @@ function FinalCard({ match, result, onUpdate }: {
     return (
       <div className="bs-card" style={{ padding: '32px 24px', textAlign: 'center' }}>
         <div className="smallcaps" style={{ marginBottom: 6 }}>{t.the_final_title}</div>
+        {match.date && (
+          <div className="smallcaps" style={{ fontSize: 10, color: 'var(--muted)', marginBottom: 4 }}>
+            {t.formatMatchDate(match.date)}{match.venue ? ` · ${match.venue}` : ''}
+          </div>
+        )}
         <div className="font-didot" style={{ fontSize: 32, color: 'var(--faint)' }}>
           {t.awaiting_finalists}
         </div>
@@ -175,6 +180,11 @@ function FinalCard({ match, result, onUpdate }: {
           <div style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>
             {t.the_final_title}
           </div>
+          {match.date && (
+            <div className="smallcaps" style={{ fontSize: 10, color: 'var(--muted)', marginTop: 4 }}>
+              {t.formatMatchDate(match.date)}{match.venue ? ` · ${match.venue}` : ''}
+            </div>
+          )}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, justifyContent: 'center' }}>

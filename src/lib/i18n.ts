@@ -96,6 +96,8 @@ export interface Translations {
   help_s5_heading: string
   help_s5_body: string
   btn_close: string
+  // Date formatting (UTC, language-aware, e.g. "SUN 28th Jun · 19:00")
+  formatMatchDate: (iso: string) => string
   // Team names
   teamName: (name: string) => string
   // Strategies
@@ -260,6 +262,20 @@ const en: Translations = {
   help_s5_heading: 'Group Tiebreakers',
   help_s5_body: 'Teams level on points are separated by head-to-head record among the tied teams (pts → GD → GF), then overall goal difference, goals scored, and finally FIFA ranking.',
   btn_close: 'Close',
+  formatMatchDate: (iso: string): string => {
+    try {
+      const d = new Date(iso)
+      const wd = new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'UTC' }).format(d).toUpperCase()
+      const n = d.getUTCDate()
+      const v = n % 100
+      const suf = ['th', 'st', 'nd', 'rd']
+      const ord = n + (suf[(v - 20) % 10] || suf[v] || suf[0])
+      const mon = new Intl.DateTimeFormat('en-GB', { month: 'short', timeZone: 'UTC' }).format(d)
+      const h = String(d.getUTCHours()).padStart(2, '0')
+      const m = String(d.getUTCMinutes()).padStart(2, '0')
+      return `${wd} ${ord} ${mon} · ${h}:${m}`
+    } catch { return iso }
+  },
   teamName: name => name,
   strategies: {
     follow_odds:     { label: 'Follow the Odds',    short: 'ODDS FAV',  description: 'Always back the bookmaker favourite' },
@@ -351,6 +367,17 @@ const de: Translations = {
   help_s5_heading: 'Gruppenentscheidungen',
   help_s5_body: 'Bei Punktgleichheit: direkter Vergleich der betroffenen Teams (Pkt → TD → T+), danach Gesamt-Tordifferenz, Gesamttore, FIFA-Rang.',
   btn_close: 'Schließen',
+  formatMatchDate: (iso: string): string => {
+    try {
+      const d = new Date(iso)
+      const wd = new Intl.DateTimeFormat('de-DE', { weekday: 'short', timeZone: 'UTC' }).format(d).replace('.', '').toUpperCase()
+      const day = d.getUTCDate()
+      const mon = new Intl.DateTimeFormat('de-DE', { month: 'short', timeZone: 'UTC' }).format(d)
+      const h = String(d.getUTCHours()).padStart(2, '0')
+      const m = String(d.getUTCMinutes()).padStart(2, '0')
+      return `${wd} ${day}. ${mon} · ${h}:${m}`
+    } catch { return iso }
+  },
   teamName: name => DE_TEAM_NAMES[name] ?? name,
   strategies: {
     follow_odds:     { label: 'Den Quoten folgen',        short: 'FAVORIT',  description: 'Immer den Buchmacherfavoriten unterstützen' },
@@ -442,6 +469,18 @@ const es: Translations = {
   help_s5_heading: 'Desempate en grupos',
   help_s5_body: 'En igualdad de puntos: resultado directo entre los equipos empatados (pts → DG → GF), luego diferencia de goles global, goles anotados y ranking FIFA.',
   btn_close: 'Cerrar',
+  formatMatchDate: (iso: string): string => {
+    try {
+      const d = new Date(iso)
+      const wdRaw = new Intl.DateTimeFormat('es-ES', { weekday: 'short', timeZone: 'UTC' }).format(d)
+      const wd = wdRaw.replace(/\./g, '').slice(0, 3).toUpperCase()
+      const day = d.getUTCDate()
+      const mon = new Intl.DateTimeFormat('es-ES', { month: 'short', timeZone: 'UTC' }).format(d).replace(/\./g, '')
+      const h = String(d.getUTCHours()).padStart(2, '0')
+      const m = String(d.getUTCMinutes()).padStart(2, '0')
+      return `${wd} ${day} ${mon} · ${h}:${m}`
+    } catch { return iso }
+  },
   teamName: name => ES_TEAM_NAMES[name] ?? name,
   strategies: {
     follow_odds:     { label: 'Seguir las Cuotas',        short: 'FAVORITO',  description: 'Siempre apostar por el favorito de las apuestas' },

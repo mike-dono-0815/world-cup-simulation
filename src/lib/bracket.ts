@@ -106,6 +106,47 @@ export const KO_SERIALS_BY_STAGE: Record<KOMatch['stage'], number[]> = {
   final: [104],
 }
 
+export const KO_SCHEDULE: Record<number, { date: string; venue: string }> = {
+  // R32
+  73: { date: '2026-06-28T19:00:00Z', venue: 'SoFi Stadium, Los Angeles' },
+  74: { date: '2026-06-29T20:30:00Z', venue: 'Gillette Stadium, Foxborough' },
+  75: { date: '2026-06-30T01:00:00Z', venue: 'Estadio BBVA, Monterrey' },
+  76: { date: '2026-06-29T17:00:00Z', venue: 'NRG Stadium, Houston' },
+  77: { date: '2026-06-30T21:00:00Z', venue: 'MetLife Stadium, East Rutherford' },
+  78: { date: '2026-06-30T17:00:00Z', venue: 'AT&T Stadium, Arlington' },
+  79: { date: '2026-07-01T01:00:00Z', venue: 'Estadio Azteca, Mexico City' },
+  80: { date: '2026-07-01T16:00:00Z', venue: 'Mercedes-Benz Stadium, Atlanta' },
+  81: { date: '2026-07-02T00:00:00Z', venue: "Levi's Stadium, Santa Clara" },
+  82: { date: '2026-07-01T20:00:00Z', venue: 'Lumen Field, Seattle' },
+  83: { date: '2026-07-02T23:00:00Z', venue: 'BMO Field, Toronto' },
+  84: { date: '2026-07-02T19:00:00Z', venue: 'SoFi Stadium, Los Angeles' },
+  85: { date: '2026-07-03T03:00:00Z', venue: 'BC Place, Vancouver' },
+  86: { date: '2026-07-03T22:00:00Z', venue: 'Hard Rock Stadium, Miami Gardens' },
+  87: { date: '2026-07-04T01:30:00Z', venue: 'Arrowhead Stadium, Kansas City' },
+  88: { date: '2026-07-03T18:00:00Z', venue: 'AT&T Stadium, Arlington' },
+  // R16
+  89: { date: '2026-07-04T21:00:00Z', venue: 'Lincoln Financial Field, Philadelphia' },
+  90: { date: '2026-07-04T17:00:00Z', venue: 'NRG Stadium, Houston' },
+  91: { date: '2026-07-05T20:00:00Z', venue: 'MetLife Stadium, East Rutherford' },
+  92: { date: '2026-07-06T02:00:00Z', venue: 'Estadio Azteca, Mexico City' },
+  93: { date: '2026-07-06T20:00:00Z', venue: 'AT&T Stadium, Arlington' },
+  94: { date: '2026-07-07T03:00:00Z', venue: 'Lumen Field, Seattle' },
+  95: { date: '2026-07-07T16:00:00Z', venue: 'Mercedes-Benz Stadium, Atlanta' },
+  96: { date: '2026-07-07T23:00:00Z', venue: 'BC Place, Vancouver' },
+  // QF
+  97: { date: '2026-07-09T20:00:00Z', venue: 'Gillette Stadium, Foxborough' },
+  98: { date: '2026-07-10T22:00:00Z', venue: 'SoFi Stadium, Los Angeles' },
+  99: { date: '2026-07-11T21:00:00Z', venue: 'Hard Rock Stadium, Miami Gardens' },
+  100: { date: '2026-07-12T02:00:00Z', venue: 'Arrowhead Stadium, Kansas City' },
+  // SF
+  101: { date: '2026-07-14T20:00:00Z', venue: 'AT&T Stadium, Arlington' },
+  102: { date: '2026-07-15T19:00:00Z', venue: 'Mercedes-Benz Stadium, Atlanta' },
+  // 3rd place play-off
+  103: { date: '2026-07-18T21:00:00Z', venue: 'Hard Rock Stadium, Miami Gardens' },
+  // Final
+  104: { date: '2026-07-19T19:00:00Z', venue: 'MetLife Stadium, East Rutherford' },
+}
+
 export const STAGE_LABELS: Record<KOMatch['stage'], string> = {
   r32: 'Round of 32',
   r16: 'Round of 16',
@@ -333,6 +374,7 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
   return allSerials.map(serial => {
     const teams = allKOTeams.get(serial) ?? { home: null, away: null }
     const slots = slotLabels.get(serial) ?? { homeSlot: '?', awaySlot: '?' }
+    const sched = KO_SCHEDULE[serial]
     return {
       serial,
       label: serialToLabel(serial),
@@ -341,6 +383,8 @@ export function buildAllKOMatches(results: Record<number, MatchResult>): KOMatch
       homeSlot: slots.homeSlot,
       awaySlot: slots.awaySlot,
       stage: KO_STAGE[serial],
+      date: sched?.date,
+      venue: sched?.venue,
     }
   })
 }

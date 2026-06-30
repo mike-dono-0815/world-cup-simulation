@@ -36,6 +36,8 @@ export interface KOMatch {
   homeSlot: string        // e.g. '2A', '1F', 'W(M1)', 'Best 3rd'
   awaySlot: string
   stage: 'r32' | 'r16' | 'qf' | 'sf' | '3rd' | 'final'
+  date?: string
+  venue?: string
 }
 
 export interface MatchResult {
