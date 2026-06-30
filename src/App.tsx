@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react'
 import type { MatchResult, AutoFillStrategy, KOMatch } from './types'
 import { GROUP_MATCHES, GROUPS, KNOWN_RESULTS } from './data/schedule'
 import { loadResults, saveResults, clearResults } from './lib/storage'
-import { fetchOfficialResults } from './lib/fetchOfficialResults'
 import { calculateGroupStandings, rankThirdPlaceTeams } from './lib/standings'
 import { buildAllKOMatches, getTournamentWinner, KO_SERIALS_BY_STAGE } from './lib/bracket'
 import { autoFillGroupMatch, autoFillKOMatch } from './lib/autofill'
@@ -33,9 +32,6 @@ export default function App() {
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
-  const [isSyncing, setIsSyncing] = useState(false)
-  const [syncMsg, setSyncMsg] = useState<string | null>(null)
-  const [officialByPair, setOfficialByPair] = useState<Record<string, MatchResult>>({})
 
   const phaseLabel = useMemo(() => ({
     groups: t.phase_groups, r32: t.phase_r32, r16: t.phase_r16,
@@ -76,37 +72,6 @@ export default function App() {
 
   const koMatches = useMemo(() => buildAllKOMatches(results), [results])
   const champion = useMemo(() => getTournamentWinner(results, koMatches), [results, koMatches])
-
-  // Fetch official results from world-cup-app on mount (auto-updated by cron-job.org)
-  useEffect(() => {
-    fetch('https://world-cup-app-eta.vercel.app/api/sim-results')
-      .then(r => r.ok ? r.json() : {})
-      .then((data: Record<string, MatchResult>) => setOfficialByPair(data))
-      .catch(() => {})
-  }, [])
-
-  // Apply official results whenever the pair-map arrives or the KO bracket resolves
-  useEffect(() => {
-    if (Object.keys(officialByPair).length === 0) return
-    const lookup = new Map<string, number>()
-    for (const m of GROUP_MATCHES) lookup.set(`${m.home}|${m.away}`, m.serial)
-    for (const m of koMatches) {
-      if (m.home && m.away) lookup.set(`${m.home.name}|${m.away.name}`, m.serial)
-    }
-    const bySerial: Record<number, MatchResult> = {}
-    for (const [pair, result] of Object.entries(officialByPair)) {
-      const serial = lookup.get(pair)
-      if (serial != null) bySerial[serial] = result
-    }
-    if (Object.keys(bySerial).length === 0) return
-    setResults(prev => {
-      const hasNew = Object.entries(bySerial).some(([s, r]) => {
-        const p = prev[Number(s)]
-        return p?.homeScore !== r.homeScore || p?.awayScore !== r.awayScore
-      })
-      return hasNew ? { ...prev, ...bySerial } : prev
-    })
-  }, [officialByPair, koMatches])
 
   // Per-phase played counts
   const phaseCounts = useMemo(() => {
@@ -185,22 +150,6 @@ export default function App() {
     setResults(newResults)
   }
 
-  async function handleSync() {
-    setIsSyncing(true)
-    setSyncMsg(null)
-    try {
-      const official = await fetchOfficialResults(koMatches)
-      const count = Object.keys(official).length
-      setResults(prev => ({ ...prev, ...official }))
-      setSyncMsg(count > 0 ? t.sync_ok(count) : t.sync_none)
-    } catch {
-      setSyncMsg(t.sync_err)
-    } finally {
-      setIsSyncing(false)
-      setTimeout(() => setSyncMsg(null), 4000)
-    }
-  }
-
   function clearResult(serial: number) {
     setResults(prev => {
       if (prev[serial]?.official) return prev
@@ -211,8 +160,12 @@ export default function App() {
   }
 
   function handleReset() {
-    clearResults(); setResults({}); setShowResetConfirm(false)
+    clearResults(); setResults({ ...KNOWN_RESULTS }); setShowResetConfirm(false)
   }
+
+  const userPlayedCount = useMemo(() =>
+    Object.values(results).filter(r => r?.homeScore != null && !r?.official).length,
+  [results])
 
   const koStageForPhase: Record<Exclude<Phase,'groups'>, KOMatch['stage'] | KOMatch['stage'][]> = {
     r32: 'r32', r16: 'r16', qf: 'qf', sf: 'sf', final: ['3rd', 'final'],
@@ -255,23 +208,10 @@ export default function App() {
                 >?</button>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button
-                  className="bs-btn"
-                  onClick={handleSync}
-                  disabled={isSyncing}
-                  style={{ opacity: isSyncing ? 0.6 : 1 }}
-                >
-                  {isSyncing ? '…' : t.btn_sync}
-                </button>
-                {syncMsg && (
-                  <span className="smallcaps" style={{ fontSize: 9, color: 'var(--muted)', whiteSpace: 'nowrap' }}>
-                    {syncMsg}
-                  </span>
-                )}
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
                   {t.btn_autofill}
                 </button>
-                {totalPlayed > 0 && (
+                {userPlayedCount > 0 && (
                   <button className="bs-btn danger" onClick={() => setShowResetConfirm(true)}>
                     {t.btn_reset}
                   </button>
@@ -429,7 +369,7 @@ export default function App() {
               {t.reset_title}
             </div>
             <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 18, lineHeight: 1.5 }}>
-              {t.reset_body(totalPlayed)}
+              {t.reset_body(userPlayedCount)}
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
               <button className="bs-btn" onClick={() => setShowResetConfirm(false)}>{t.btn_cancel}</button>
