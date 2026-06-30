@@ -162,6 +162,10 @@ function FinalCard({ match, result, onUpdate }: {
   const as_ = result?.awayScore ?? null
   const isDraw = hs != null && as_ != null && hs === as_
   const penWinner = result?.penaltyWinner
+  const winner: 'home' | 'away' | null =
+    hs != null && as_ != null
+      ? hs > as_ ? 'home' : as_ > hs ? 'away' : penWinner ?? null
+      : null
 
   function setHome(v: number) { onUpdate(match.serial, { homeScore: v, awayScore: as_, penaltyWinner: undefined }) }
   function setAway(v: number) { onUpdate(match.serial, { homeScore: hs, awayScore: v, penaltyWinner: undefined }) }
@@ -189,8 +193,8 @@ function FinalCard({ match, result, onUpdate }: {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, justifyContent: 'center' }}>
           {/* Home */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.2, textAlign: 'right' }}>{t.teamName(home.name)}</div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, opacity: winner === 'away' ? 0.35 : 1 }}>
+            <div style={{ fontSize: 16, fontWeight: winner === 'home' ? 700 : 600, lineHeight: 1.2, textAlign: 'right' }}>{t.teamName(home.name)}</div>
             <Flag code={home.flagCode} size={44} />
           </div>
 
@@ -202,8 +206,8 @@ function FinalCard({ match, result, onUpdate }: {
           </div>
 
           {/* Away */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.2 }}>{t.teamName(away.name)}</div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6, opacity: winner === 'home' ? 0.35 : 1 }}>
+            <div style={{ fontSize: 16, fontWeight: winner === 'away' ? 700 : 600, lineHeight: 1.2 }}>{t.teamName(away.name)}</div>
             <Flag code={away.flagCode} size={44} />
           </div>
         </div>

@@ -50,6 +50,10 @@ export function MatchCard({
   const hasResult = hs != null && as_ != null
   const isComplete = hasResult && (!isKO || !isDraw || penWinner != null)
   const isOfficial = !!result?.official
+  const winner: 'home' | 'away' | null =
+    isKO && hasResult
+      ? hs! > as_! ? 'home' : as_! > hs! ? 'away' : penWinner ?? null
+      : null
 
   const [activeScore, setActiveScore] = useState<'home' | 'away' | null>(null)
 
@@ -119,10 +123,10 @@ export function MatchCard({
       {/* Body */}
       <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
         {/* Home */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, opacity: winner === 'away' ? 0.35 : 1 }}>
           <Flag code={home.flagCode} size={26} />
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: 15, fontWeight: winner === 'home' ? 700 : 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {t.teamName(home.name)}
             </div>
             {home.qualLabel && (
@@ -151,9 +155,9 @@ export function MatchCard({
         </div>
 
         {/* Away */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end', minWidth: 0 }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'flex-end', minWidth: 0, opacity: winner === 'home' ? 0.35 : 1 }}>
           <div style={{ minWidth: 0, textAlign: 'right' }}>
-            <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: 15, fontWeight: winner === 'away' ? 700 : 600, lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {t.teamName(away.name)}
             </div>
             {away.qualLabel && (
