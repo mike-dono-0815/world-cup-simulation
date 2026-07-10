@@ -162,14 +162,20 @@ function FinalCard({ match, result, onUpdate }: {
   const as_ = result?.awayScore ?? null
   const isDraw = hs != null && as_ != null && hs === as_
   const penWinner = result?.penaltyWinner
+  const psoH = result?.psoHomeScore ?? null
+  const psoA = result?.psoAwayScore ?? null
+  const isAet = result?.resultType === 'aet'
+  const isPso = isDraw && penWinner != null
+  const hasResult = hs != null && as_ != null
   const winner: 'home' | 'away' | null =
     hs != null && as_ != null
       ? hs > as_ ? 'home' : as_ > hs ? 'away' : penWinner ?? null
       : null
 
-  function setHome(v: number) { onUpdate(match.serial, { homeScore: v, awayScore: as_, penaltyWinner: undefined }) }
-  function setAway(v: number) { onUpdate(match.serial, { homeScore: hs, awayScore: v, penaltyWinner: undefined }) }
+  function setHome(v: number) { onUpdate(match.serial, { homeScore: v, awayScore: as_, penaltyWinner: undefined, resultType: undefined }) }
+  function setAway(v: number) { onUpdate(match.serial, { homeScore: hs, awayScore: v, penaltyWinner: undefined, resultType: undefined }) }
   function setPenalty(w: 'home' | 'away') { onUpdate(match.serial, { homeScore: hs, awayScore: as_, penaltyWinner: w }) }
+  function toggleAet() { onUpdate(match.serial, { homeScore: hs, awayScore: as_, resultType: isAet ? undefined : 'aet' }) }
 
   function handleScoreTap(which: 'home' | 'away') {
     if (isPartial || isOfficial) return
@@ -202,10 +208,31 @@ function FinalCard({ match, result, onUpdate }: {
           </div>
 
           {/* Score */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            <ScoreBig value={hs} onChange={setHome} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
-            <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
-            <ScoreBig value={as_} onChange={setAway} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ScoreBig value={hs} onChange={setHome} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
+              <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
+              <ScoreBig value={as_} onChange={setAway} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+            </div>
+            {hasResult && isPso && (
+              <span className="smallcaps" style={{ fontSize: 10, letterSpacing: '0.18em', color: 'var(--muted)' }}>
+                {psoH != null && psoA != null ? `${psoH} – ${psoA} pen` : 'pen'}
+              </span>
+            )}
+            {hasResult && isAet && !isPso && (
+              isOfficial ? (
+                <span className="smallcaps" style={{ fontSize: 10, letterSpacing: '0.18em', color: 'var(--muted)' }}>{t.label_aet}</span>
+              ) : (
+                <button onMouseDown={e => e.preventDefault()} onClick={toggleAet} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}>
+                  <span className="smallcaps" style={{ fontSize: 10, letterSpacing: '0.18em', color: 'var(--advance)' }}>{t.label_aet} ×</span>
+                </button>
+              )
+            )}
+            {hasResult && !isPso && !isAet && !isDraw && !isOfficial && !isPartial && (
+              <button onMouseDown={e => e.preventDefault()} onClick={toggleAet} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}>
+                <span className="smallcaps" style={{ fontSize: 10, letterSpacing: '0.18em', color: 'var(--faint)' }}>+ {t.label_aet}</span>
+              </button>
+            )}
           </div>
 
           {/* Away */}

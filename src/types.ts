@@ -44,6 +44,9 @@ export interface MatchResult {
   homeScore: number | null
   awayScore: number | null
   penaltyWinner?: 'home' | 'away'   // KO only when scores level
+  psoHomeScore?: number | null      // penalty shootout tally (display only)
+  psoAwayScore?: number | null
+  resultType?: 'aet'                // explicit AET marker; PSO inferred from penaltyWinner
   official?: boolean                 // fetched from real API — not editable by user
 }
 

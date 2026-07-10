@@ -92,6 +92,7 @@ export interface Translations {
   help_s5_heading: string
   help_s5_body: string
   btn_close: string
+  label_aet: string
   // Date formatting (UTC, language-aware, e.g. "SUN 28th Jun · 19:00")
   formatMatchDate: (iso: string) => string
   // Team names
@@ -227,6 +228,7 @@ const en: Translations = {
   pending: 'Pending',
   clear_result_aria: 'Clear result',
   penalties_won_by: 'Penalties won by',
+  label_aet: 'a.e.t.',
   the_odds: 'The Odds',
   ko_reported: (p, t) => `${p}/${t} reported`,
   awaiting_finalists: 'Awaiting finalists',
@@ -328,6 +330,7 @@ const de: Translations = {
   pending: 'Ausstehend',
   clear_result_aria: 'Ergebnis löschen',
   penalties_won_by: 'Elfmeter gewonnen von',
+  label_aet: 'n.V.',
   the_odds: 'Die Quoten',
   ko_reported: (p, t) => `${p}/${t} eingetragen`,
   awaiting_finalists: 'Warten auf Finalisten',
@@ -426,6 +429,7 @@ const es: Translations = {
   pending: 'Pendiente',
   clear_result_aria: 'Borrar resultado',
   penalties_won_by: 'Penaltis ganados por',
+  label_aet: 'p.p.e.',
   the_odds: 'Las Cuotas',
   ko_reported: (p, t) => `${p}/${t} registrados`,
   awaiting_finalists: 'Esperando finalistas',
