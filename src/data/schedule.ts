@@ -205,4 +205,27 @@ export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: numbe
   74: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Germany 1-1 Paraguay AET (Paraguay 4-3 pens)
   75: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Netherlands 1-1 Morocco AET (Morocco 3-2 pens)
   76: { homeScore: 2, awayScore: 1, official: true }, // Brazil 2-1 Japan
+  77: { homeScore: 3, awayScore: 0, official: true }, // France 3-0 Sweden
+  78: { homeScore: 1, awayScore: 2, official: true }, // Côte d'Ivoire 1-2 Norway
+  79: { homeScore: 2, awayScore: 0, official: true }, // Mexico 2-0 Ecuador
+  80: { homeScore: 2, awayScore: 1, official: true }, // England 2-1 DR Congo
+  81: { homeScore: 2, awayScore: 0, official: true }, // USA 2-0 Bosnia & Herzegovina
+  82: { homeScore: 3, awayScore: 2, official: true }, // Belgium 3-2 Senegal (AET)
+  83: { homeScore: 2, awayScore: 1, official: true }, // Portugal 2-1 Croatia
+  84: { homeScore: 3, awayScore: 0, official: true }, // Spain 3-0 Austria
+  85: { homeScore: 2, awayScore: 0, official: true }, // Switzerland 2-0 Algeria
+  86: { homeScore: 3, awayScore: 2, official: true }, // Argentina 3-2 Cape Verde (AET)
+  87: { homeScore: 1, awayScore: 0, official: true }, // Colombia 1-0 Ghana
+  88: { homeScore: 1, awayScore: 1, penaltyWinner: 'away', official: true }, // Australia 1-1 Egypt (Egypt 4-2 pens)
+  // R16
+  89: { homeScore: 0, awayScore: 1, official: true }, // Paraguay 0-1 France
+  90: { homeScore: 0, awayScore: 3, official: true }, // Canada 0-3 Morocco
+  91: { homeScore: 1, awayScore: 2, official: true }, // Brazil 1-2 Norway
+  92: { homeScore: 2, awayScore: 3, official: true }, // Mexico 2-3 England
+  93: { homeScore: 0, awayScore: 1, official: true }, // Portugal 0-1 Spain
+  94: { homeScore: 1, awayScore: 4, official: true }, // USA 1-4 Belgium
+  95: { homeScore: 3, awayScore: 2, official: true }, // Argentina 3-2 Egypt
+  96: { homeScore: 0, awayScore: 0, penaltyWinner: 'home', official: true }, // Switzerland 0-0 Colombia (Switzerland 4-3 pens)
+  // QF
+  97: { homeScore: 2, awayScore: 0, official: true }, // France 2-0 Morocco
 }
