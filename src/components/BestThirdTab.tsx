@@ -33,8 +33,8 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
         <table className="bs-table">
           <thead>
             <tr>
-              <th className="first" style={{ width: 32 }}>{t.col_group}</th>
-              <th style={{ textAlign: 'left', paddingLeft: 8 }}>{t.col_club}</th>
+              <th className="first" style={{ width: 20 }}>{t.col_group}</th>
+              <th style={{ textAlign: 'left', paddingLeft: 8, minWidth: 0 }}>{t.col_club}</th>
               <th>{t.col_pld}</th>
               <th>{t.col_w}</th>
               <th>{t.col_d}</th>
@@ -52,19 +52,19 @@ export function BestThirdTab({ allGroupStandings, advancingThirds }: Props) {
               const accent = isAdvancing ? 'var(--third)' : 'transparent'
               return (
                 <tr key={s.team} className={i % 2 === 1 ? 'alt' : ''}>
-                  <td style={{ padding: '10px 0 10px 14px', position: 'relative', width: 32 }}>
+                  <td style={{ padding: '10px 0 10px 14px', position: 'relative', width: 20 }}>
                     <div style={{
                       position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, background: accent,
                     }} />
                     <span className="font-didot" style={{ fontSize: 15, fontWeight: 700 }}>{group}</span>
                   </td>
-                  <td style={{ textAlign: 'left', padding: '10px 8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <td style={{ textAlign: 'left', padding: '10px 8px', maxWidth: 120 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span className="font-didot tnum" style={{
-                        fontSize: 16, lineHeight: 1, color: 'var(--muted)', minWidth: 28, textAlign: 'right',
+                        fontSize: 16, lineHeight: 1, color: 'var(--muted)', minWidth: 22, textAlign: 'right', flexShrink: 0,
                       }}>{i + 1}.</span>
                       <Flag code={s.flagCode} size={20} />
-                      <span style={{ fontSize: 14, fontWeight: 600 }}>{t.teamName(s.team)}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.teamName(s.team)}</span>
                     </div>
                   </td>
                   <td>{s.played}</td>
