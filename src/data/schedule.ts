@@ -228,4 +228,5 @@ export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: numbe
   96: { homeScore: 0, awayScore: 0, penaltyWinner: 'home', psoHomeScore: 4, psoAwayScore: 3, official: true }, // Switzerland 0-0 Colombia (Switzerland 4-3 pens)
   // QF
   97: { homeScore: 2, awayScore: 0, official: true }, // France 2-0 Morocco
+  98: { homeScore: 2, awayScore: 1, official: true }, // Spain 2-1 Belgium
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import type { MatchResult, AutoFillStrategy, KOMatch } from './types'
 import { GROUP_MATCHES, GROUPS, KNOWN_RESULTS } from './data/schedule'
 import { loadResults, saveResults, clearResults } from './lib/storage'
+import { fetchOfficialResults } from './lib/fetchOfficialResults'
 import { calculateGroupStandings, rankThirdPlaceTeams } from './lib/standings'
 import { buildAllKOMatches, getTournamentWinner, KO_SERIALS_BY_STAGE } from './lib/bracket'
 import { autoFillGroupMatch, autoFillKOMatch } from './lib/autofill'
@@ -39,6 +40,17 @@ export default function App() {
   } as Record<Phase, string>), [t])
 
   useEffect(() => { saveResults(results) }, [results])
+
+  // Fetch official results from football-data.org on load; silently ignored if API key is absent
+  useEffect(() => {
+    fetchOfficialResults(koMatches)
+      .then(official => {
+        if (Object.keys(official).length > 0) {
+          setResults(prev => ({ ...prev, ...official }))
+        }
+      })
+      .catch(() => {})
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   function applyWithKOCleanup(
     prev: Record<number, MatchResult>,
