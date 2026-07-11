@@ -26,7 +26,7 @@ const PHASES: Array<{ id: Phase; num: string; total: number }> = [
 
 export default function App() {
   const { t } = useLanguage()
-  const [results, setResults] = useState<Record<number, MatchResult>>(() => ({ ...KNOWN_RESULTS, ...loadResults() }))
+  const [results, setResults] = useState<Record<number, MatchResult>>(() => ({ ...loadResults(), ...KNOWN_RESULTS }))
   const [activePhase, setActivePhase] = useState<Phase>('groups')
   const [activeGroup, setActiveGroup] = useState<typeof GROUPS[number] | 'best3rd'>('A')
   const [showAutoFill, setShowAutoFill] = useState(false)
