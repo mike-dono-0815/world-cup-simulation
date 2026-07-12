@@ -229,4 +229,6 @@ export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: numbe
   // QF
   97: { homeScore: 2, awayScore: 0, official: true }, // France 2-0 Morocco
   98: { homeScore: 2, awayScore: 1, official: true }, // Spain 2-1 Belgium
+  99: { homeScore: 1, awayScore: 2, resultType: 'aet', official: true }, // Norway 1-2 England (AET)
+  100: { homeScore: 3, awayScore: 1, resultType: 'aet', official: true }, // Argentina 3-1 Switzerland (AET)
 }
