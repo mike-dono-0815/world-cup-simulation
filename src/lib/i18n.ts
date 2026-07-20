@@ -15,6 +15,8 @@ export interface Translations {
   btn_autofill: string
   btn_reset: string
   official_badge: string
+  sim_mode_label: string
+  sim_mode_hint: string
   // Phase nav
   phase_groups: string
   phase_r32: string
@@ -189,6 +191,8 @@ const en: Translations = {
   btn_autofill: 'Auto-fill',
   btn_reset: 'Reset',
   official_badge: 'Official',
+  sim_mode_label: 'Simulation',
+  sim_mode_hint: 'Simulation mode — every result, including official ones, can be edited.',
   phase_groups: 'Group Stage',
   phase_r32: 'Round of 32',
   phase_r16: 'Round of 16',
@@ -291,6 +295,8 @@ const de: Translations = {
   btn_autofill: 'Auto-Füllen',
   btn_reset: 'Rücksetzen',
   official_badge: 'Offiziell',
+  sim_mode_label: 'Simulation',
+  sim_mode_hint: 'Simulationsmodus — alle Ergebnisse, auch offizielle, können bearbeitet werden.',
   phase_groups: 'Gruppenphase',
   phase_r32: 'Runde der 32',
   phase_r16: 'Achtelfinale',
@@ -390,6 +396,8 @@ const es: Translations = {
   btn_autofill: 'Auto-rellenar',
   btn_reset: 'Reiniciar',
   official_badge: 'Oficial',
+  sim_mode_label: 'Simulación',
+  sim_mode_hint: 'Modo simulación — todos los resultados, incluidos los oficiales, se pueden editar.',
   phase_groups: 'Fase de Grupos',
   phase_r32: 'Ronda de 32',
   phase_r16: 'Octavos de Final',

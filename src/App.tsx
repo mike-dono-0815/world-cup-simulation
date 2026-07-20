@@ -33,6 +33,7 @@ export default function App() {
   const [showAutoFill, setShowAutoFill] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
+  const [simulationMode, setSimulationMode] = useState(false)
 
   const phaseLabel = useMemo(() => ({
     groups: t.phase_groups, r32: t.phase_r32, r16: t.phase_r16,
@@ -70,6 +71,25 @@ export default function App() {
   const updateResult = (serial: number, r: MatchResult) => {
     setResults(prev => applyWithKOCleanup(prev, { ...prev, [serial]: r }))
   }
+
+  // Simulation mode lets every result — including official ones — be edited.
+  // Leaving it restores the true official results, discarding any overrides.
+  function setSimMode(next: boolean) {
+    setSimulationMode(next)
+    if (!next) setResults(prev => ({ ...prev, ...KNOWN_RESULTS }))
+  }
+
+  // What gets rendered into match cards: in simulation mode, results lose
+  // their `official` flag so cards unlock for editing. The underlying
+  // `results` state (used for standings/bracket derivation) is untouched.
+  const displayResults = useMemo(() => {
+    if (!simulationMode) return results
+    const out: Record<number, MatchResult> = {}
+    for (const [serial, r] of Object.entries(results)) {
+      out[Number(serial)] = r.official ? { ...r, official: false } : r
+    }
+    return out
+  }, [results, simulationMode])
 
   const allGroupStandings = useMemo(() => {
     const map = new Map<string, ReturnType<typeof calculateGroupStandings>>()
@@ -164,7 +184,7 @@ export default function App() {
 
   function clearResult(serial: number) {
     setResults(prev => {
-      if (prev[serial]?.official) return prev
+      if (prev[serial]?.official && !simulationMode) return prev
       const next = { ...prev }
       delete next[serial]
       return applyWithKOCleanup(prev, next)
@@ -223,6 +243,20 @@ export default function App() {
                 <button className="bs-btn primary" onClick={() => setShowAutoFill(true)}>
                   {t.btn_autofill}
                 </button>
+                <div className="bs-seg" role="group" aria-label={t.sim_mode_label}>
+                  <button
+                    className={`bs-seg-btn${!simulationMode ? ' active' : ''}`}
+                    onClick={() => setSimMode(false)}
+                  >
+                    {t.official_badge}
+                  </button>
+                  <button
+                    className={`bs-seg-btn danger${simulationMode ? ' active' : ''}`}
+                    onClick={() => setSimMode(true)}
+                  >
+                    {t.sim_mode_label}
+                  </button>
+                </div>
                 {userPlayedCount > 0 && (
                   <button className="bs-btn danger" onClick={() => setShowResetConfirm(true)}>
                     {t.btn_reset}
@@ -236,6 +270,11 @@ export default function App() {
             }}>
               {t.tagline}
             </div>
+            {simulationMode && (
+              <div className="smallcaps" style={{ fontSize: 10, color: 'var(--crimson)', marginTop: 4, letterSpacing: '0.12em' }}>
+                {t.sim_mode_hint}
+              </div>
+            )}
           </div>
         </div>
 
@@ -332,7 +371,7 @@ export default function App() {
             matches={GROUP_MATCHES.filter(m => m.group === activeGroup)}
             standings={allGroupStandings.get(activeGroup) ?? []}
             advancingThirds={advancingThirds}
-            results={results}
+            results={displayResults}
             onUpdate={updateResult}
             onClear={clearResult}
           />
@@ -340,7 +379,7 @@ export default function App() {
         ) : (
           <KOSection
             koMatches={koMatches}
-            results={results}
+            results={displayResults}
             onUpdate={updateResult}
             onClear={clearResult}
             filterStage={koStageForPhase[activePhase]}
