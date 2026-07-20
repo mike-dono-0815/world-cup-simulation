@@ -234,4 +234,7 @@ export const KNOWN_RESULTS: Record<number, { homeScore: number; awayScore: numbe
   // SF
   101: { homeScore: 0, awayScore: 2, official: true }, // France 0-2 Spain
   102: { homeScore: 1, awayScore: 2, official: true }, // England 1-2 Argentina
+  // 3rd place & Final
+  103: { homeScore: 4, awayScore: 6, official: true }, // France 4-6 England
+  104: { homeScore: 1, awayScore: 0, resultType: 'aet', official: true }, // Spain 1-0 Argentina (AET)
 }
