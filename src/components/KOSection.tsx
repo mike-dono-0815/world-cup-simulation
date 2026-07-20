@@ -186,6 +186,14 @@ function FinalCard({ match, result, onUpdate }: {
   return (
     <article className="bs-card" style={{ opacity: isPartial ? 0.65 : 1 }}>
       <div style={{ padding: '24px 28px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 700,
+            color: isOfficial ? '#1a6b3c' : hasResult ? 'var(--advance)' : 'var(--faint)',
+          }}>
+            {isOfficial ? t.official_badge : hasResult ? t.reported : t.pending}
+          </span>
+        </div>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <div style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>
             {t.the_final_title}
@@ -210,9 +218,19 @@ function FinalCard({ match, result, onUpdate }: {
           {/* Score */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, flexShrink: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <ScoreBig value={hs} onChange={setHome} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
-              <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
-              <ScoreBig value={as_} onChange={setAway} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+              {isOfficial && hasResult ? (
+                <>
+                  <span className="tnum bs-score-num" style={{ fontSize: 56, fontWeight: 700, lineHeight: 1, minWidth: 40, textAlign: 'center' }}>{hs}</span>
+                  <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
+                  <span className="tnum bs-score-num" style={{ fontSize: 56, fontWeight: 700, lineHeight: 1, minWidth: 40, textAlign: 'center' }}>{as_}</span>
+                </>
+              ) : (
+                <>
+                  <ScoreBig value={hs} onChange={setHome} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('home')} isActive={activeScore === 'home'} />
+                  <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1, color: 'var(--muted)', padding: '0 2px' }}>:</span>
+                  <ScoreBig value={as_} onChange={setAway} disabled={isPartial || isOfficial} onTap={() => handleScoreTap('away')} isActive={activeScore === 'away'} />
+                </>
+              )}
             </div>
             {hasResult && isPso && (
               <span className="smallcaps" style={{ fontSize: 10, letterSpacing: '0.18em', color: 'var(--muted)' }}>
